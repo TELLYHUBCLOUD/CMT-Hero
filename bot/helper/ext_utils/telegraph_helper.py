@@ -102,5 +102,5 @@ class TelegraphHelper:
 
 
 telegraph = TelegraphHelper(
-    'Z-Mirror', 'https://github.com/Dawn-India/Z-Mirror')
+    'Pea Masamba', 'https://subscene.com/u/1271292')
 bot_loop.run_until_complete(telegraph.create_account())
