@@ -145,29 +145,29 @@ def get_readable_message():
         elapsed = time() - download.extra_details['startTime']
 
         msg += f"\n<b><i>{escape(f'{download.name()}')}</i>\n\n" if elapsed <= config_dict['AUTO_DELETE_MESSAGE_DURATION'] else ""
-        msg += f"» <b>{download.status()}</b>"
+        msg += f" <b>{download.status()}</b>"
 
         if download.status() not in [MirrorStatus.STATUS_SEEDING, MirrorStatus.STATUS_CONVERTING,
                                      MirrorStatus.STATUS_QUEUEDL, MirrorStatus.STATUS_QUEUEUP, 
                                      MirrorStatus.STATUS_PAUSED]:
 
-            msg += f" » <code>{download.speed()}</code>"
-            msg += f"\n» {get_progress_bar_string(download.progress())} » {download.progress()}"
-            msg += f"\n» <b>Done</b> » <code>{download.processed_bytes()}</code> of <code>{download.size()}</code>"
-            msg += f"\n» <b>ETA</b> » <code>{download.eta()}</code> | "
+            msg += f"\n <code>{download.speed()}</code>"
+            msg += f"\n {get_progress_bar_string(download.progress())} » {download.progress()}"
+            msg += f"\n <b>Done</b> » <code>{download.processed_bytes()}</code> of <code>{download.size()}</code>"
+            msg += f"\n <b>ETA</b> » <code>{download.eta()}</code> | "
             msg += f"<b>Active</b> » <code>{get_readable_time(elapsed)}</code>"
-            msg += f"\n» <b>Engine</b> » <code>{download.engine}</code>"
+            msg += f"\n <b>Engine</b> » <code>{download.engine}</code>"
 
             if hasattr(download, 'playList'):
                 try:
                     if playlist:=download.playList():
-                        msg += f"\n» <b>Playlist Count</b> » {playlist}"
+                        msg += f"\n <b>Playlist Count</b> » {playlist}"
                 except:
                     pass
 
             if hasattr(download, 'seeders_num'):
                 try:
-                    msg += f"\n» <b>Seeders</b> » {download.seeders_num()}"
+                    msg += f"\n <b>Seeders</b> » {download.seeders_num()}"
                     msg += f" | <b>Leechers</b> » {download.leechers_num()}"
                 except:
                     pass
