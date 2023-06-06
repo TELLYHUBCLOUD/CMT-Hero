@@ -110,7 +110,7 @@ async def get_telegraph_list(telegraph_content):
     if len(path) > 1:
         await telegraph.edit_telegraph(path, telegraph_content)
     buttons = ButtonMaker()
-    buttons.ubutton("🔎 VIEW", f"https://graph.org/{path[0]}", 'header')
+    buttons.ubutton("🔦 VIEW", f"https://graph.org/{path[0]}", 'header')
     buttons = extra_btns(buttons)
     return buttons.build_menu(1)
 
@@ -187,7 +187,7 @@ def get_readable_message():
             msg += f"\n» <b>Task</b> » <a href='{download.message.link}'>{download.extra_details['mode']}</a>"
 
         msg += f" | <b>By</b> » {tag}"
-        msg += f"\n⚠️ <code>/{BotCommands.CancelMirror[0]} {download.gid()}</code>\n\n"
+        msg += f"\n📵 <code>/{BotCommands.CancelMirror[0]} {download.gid()}</code>\n\n"
 
     if len(msg) == 0:
         return None, None
