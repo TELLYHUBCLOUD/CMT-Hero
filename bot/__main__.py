@@ -70,7 +70,7 @@ async def stats(_, message):
     UMT = 'Unlimited' if config_dict['USER_MAX_TASKS'] == '' else config_dict['USER_MAX_TASKS']
     BMT = 'Unlimited' if config_dict['QUEUE_ALL'] == '' else config_dict['QUEUE_ALL']
 
-    stats = f'<b><i><u>Zee Bot Statistics</u></i></b>\n\n'\
+    stats = f'<b><i><u>Pea Masamba Bot Statistics</u></i></b>\n\n'\
             f'<b><i><u>Repo Info</u></i></b>\n' \
             f'<b>Updated:</b> <code>{last_commit}</code>\n' \
             f'<b>Version:</b> <code>{version}</code>\n' \
@@ -125,10 +125,10 @@ async def start(_, message):
     elif config_dict['DM_MODE']:
         start_string = 'Bot Started.\n' \
                        'Now I can send your stuff here.\n' \
-                       'Use me here: @Z_Mirror'
+                       'Use me here: @@peamasamba'
     else:
         start_string = 'Sorry, you cant use me here!\n' \
-                       'Join @Z_Mirror to use me.\n' \
+                       'Join @peamasamba to use me.\n' \
                        'Thank You'
     await sendMessage(message, start_string)
 
