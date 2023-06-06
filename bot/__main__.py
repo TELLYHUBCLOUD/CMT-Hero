@@ -120,7 +120,7 @@ async def start(_, message):
         data['time'] = time()
         user_data[userid].update(data)
         msg = 'Token berhasil diperbarui!\n\n'
-        msg += f'Validity: {get_readable_time(int(config_dict["TOKEN_TIMEOUT"]))}'
+        msg += f'Masa Token Berlaku: {get_readable_time(int(config_dict["TOKEN_TIMEOUT"]))}'
         return await sendMessage(message, msg)
     elif config_dict['DM_MODE']:
         start_string = 'Bot sudah di restart.\n' \
