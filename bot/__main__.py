@@ -75,8 +75,7 @@ async def stats(_, message):
             f'<b>Updated:</b> <code>{last_commit}</code>\n' \
             f'<b>Version:</b> <code>{version}</code>\n' \
             f'<b>Change Log:</b> <code>{change_log}</code>\n\n' \
-            f'<b><i><u>Bot Info</u></i></b>\n' \
-            f'<b>SYS UPTM:</b> <code>{sysTime}</code>\n' \
+            f'<b><i><u>Bot Info</u></i></b>\n' \            
             f'<b>BOT UPTM:</b> <code>{botTime}</code>\n\n' \            
             f'<b>CPU Total Core(s):</b> <code>{cpu_count(logical=True)}</code>\n' \
             f'<b>P-Core(s):</b> <code>{cpu_count(logical=False)}</code> | <b>V-Core(s):</b> <code>{v_core}</code>\n' \
