@@ -223,7 +223,7 @@ def get_readable_message():
         buttons.ibutton(f"{PAGE_NO}/{PAGES}", "status ref")
         buttons.ibutton("⫸", "status nex")
         button = buttons.build_menu(3)    
-    msg += f"\n<b>🄿🄴🄰 🄼🄰🅂🄰🄼🄱🄰</b>"
+    msg += f"\n<b>🄰🄽🄰🄺 🄼🄰🅂🄰🄼🄱🄰</b>"
     msg += f"\n<b>TASKS</b>: {tasks}"
     msg += f"\n<b>DISK</b>: <code>{get_readable_file_size(disk_usage(config_dict['DOWNLOAD_DIR']).free)}</code>"
     msg += f" | <b>RAM</b>: <code>{virtual_memory().percent}%</code>"
