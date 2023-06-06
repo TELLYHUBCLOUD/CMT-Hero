@@ -145,7 +145,7 @@ def get_readable_message():
         elapsed = time() - download.extra_details['startTime']
 
         msg += f"\n<b><i>{escape(f'{download.name()}')}</i>\n\n" if elapsed <= config_dict['AUTO_DELETE_MESSAGE_DURATION'] else ""
-        msg += f" <b>{download.status()}</b>"
+        msg += f"\n\n<b>{download.status()}</b>"
 
         if download.status() not in [MirrorStatus.STATUS_SEEDING, MirrorStatus.STATUS_CONVERTING,
                                      MirrorStatus.STATUS_QUEUEDL, MirrorStatus.STATUS_QUEUEUP, 
@@ -218,10 +218,11 @@ def get_readable_message():
         buttons.ibutton("⫸", "status nex")
         button = buttons.build_menu(3)
     msg += "▬▬▬▬▬▬▬▬▬▬▬▬"
+    msg += f"\n<b>🄿🄴🄰 🄼🄰🅂🄰🄼🄱🄰</b>"
     msg += f"\n<b>DISK</b>: <code>{get_readable_file_size(disk_usage(config_dict['DOWNLOAD_DIR']).free)}</code>"
     msg += f" | <b>UPTM</b>: <code>{get_readable_time(time() - botStartTime)}</code>"
-    msg += f"\n<b>DL</b>: <code>{get_readable_file_size(dl_speed)}/s</code>"
-    msg += f" | <b>UL</b>: <code>{get_readable_file_size(up_speed)}/s</code>"
+    msg += f"\n<b>DL</b>: <code>{get_readable_file_size(dl_speed)}/s</code> ▼"
+    msg += f" | <b>UL</b>: <code>{get_readable_file_size(up_speed)}/s</code> ▲"
     remaining_time = 86400 - (time() - botStartTime)
     res_time = '⚠️ ANYTIME ⚠️' if remaining_time <= 0 else get_readable_time(remaining_time)
     if remaining_time <= 3600:
