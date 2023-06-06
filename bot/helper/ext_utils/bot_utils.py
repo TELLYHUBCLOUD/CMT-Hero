@@ -191,7 +191,7 @@ def get_readable_message():
             msg += f"\n <b>Task</b> » <a href='{download.message.link}'>{download.extra_details['mode']}</a>"
 
         msg += f" | <b>By</b> » {tag}"
-        msg += f"\n📵 <code>/{BotCommands.CancelMirror[0]} {download.gid()}</code>\n\n"
+        msg += f"\nStop</b> » <code>/{BotCommands.CancelMirror[0]} {download.gid()}</code>\n\n"
 
     if len(msg) == 0:
         return None, None
@@ -344,8 +344,8 @@ def checking_access(user_id, button=None):
         user_data[user_id].update(data)
         if button is None:
             button = ButtonMaker()
-        button.ubutton('Get New Token', short_url(f'https://telegram.me/{bot_name}?start={token}'))
-        return 'Your <b>Token</b> is expired. Get a new one.', button
+        button.ubutton('Get New Token, bro', short_url(f'https://telegram.me/{bot_name}?start={token}'))
+        return 'Your <b>Token</b> is expired. Get a new one, bro.', button
     return None, button
 
 
