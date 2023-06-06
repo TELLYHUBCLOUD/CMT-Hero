@@ -35,78 +35,76 @@ from .modules import (anonymous, authorize, bot_settings, cancel_mirror,
 
 
 async def stats(_, message):
-    total, used, free, disk = disk_usage('/')
-    memory = virtual_memory()
-    currentTime = get_readable_time(time() - botStartTime)
-    mem_p = memory.percent
-    osUptime = get_readable_time(time() - boot_time())
-    cpuUsage = cpu_percent(interval=0.5)
     if await aiopath.exists('.git'):
-        command = '''
-                    remote_url=$(git config --get remote.origin.url) &&
-                    if echo "$remote_url" | grep -qE "github\.com[:/](.*)/(.*?)(\.git)?$"; then
-                        owner_name=$(echo "$remote_url" | awk -F/ '{ print $(NF-1) }') &&
-                        repo_name=$(echo "$remote_url" | awk -F/ '{ print $NF }' | sed 's/\.git$//') &&
-                        last_commit=$(git log -1 --pretty=format:'%h') &&
-                        commit_link="https://github.com/$owner_name/$repo_name/commit/$last_commit" &&
-                        echo $commit_link;
-                    else
-                        echo "Failed to extract repository name and owner name from the remote URL.";
-                    fi
-                '''
-        commit_link = (await cmd_exec(command, True))[0]
-        commit_id = (await cmd_exec("git log -1 --pretty=format:'%h'", True))[0]
-        commit_from = (await cmd_exec("git log -1 --date=short --pretty=format:'%cr'", True))[0]
-        commit_date = (await cmd_exec("git log -1 --date=format:'%d %B %Y' --pretty=format:'%ad'", True))[0]
-        commit_time = (await cmd_exec("git log -1 --date=format:'%I:%M:%S %p' --pretty=format:'%ad'", True))[0]
-        commit_name = (await cmd_exec("git log -1 --pretty=format:'%s'", True))[0]
-        
-        commit_html_link = f'<a href="{commit_link}">{commit_id}</a>'
-        
-        stats = f'<b>REPOSITORY INFO</b>\n\n' \
-            f"<code>• Last commit: </code>{commit_html_link}\n"\
-            f'<code>• Commit date: </code>{commit_date}\n'\
-            f'<code>• Commited on: </code>{commit_time}\n'\
-            f'<code>• From now   : </code>{commit_from}\n'\
-            f"<code>• What's new : </code>{commit_name}\n"\
-            f'\n'\
-            f'<b>SYSTEM INFO</b>\n\n'\
-            f'<code>• Bot uptime :</code> {currentTime}\n'\
-            f'<code>• Sys uptime :</code> {osUptime}\n'\
-            f'<code>• CPU usage  :</code> {cpuUsage}%\n'\
-            f'<code>• RAM usage  :</code> {mem_p}%\n'\
-            f'<code>• Disk usage :</code> {disk}%\n'\
-            f'<code>• Disk space :</code> {get_readable_file_size(free)}/{get_readable_file_size(total)}\n\n'\
-            
-        if config_dict['SHOW_LIMITS']:
-        
-            DIRECT_LIMIT = config_dict['DIRECT_LIMIT']
-            YTDLP_LIMIT = config_dict['YTDLP_LIMIT']
-            GDRIVE_LIMIT = config_dict['GDRIVE_LIMIT']
-            TORRENT_LIMIT = config_dict['TORRENT_LIMIT']
-            CLONE_LIMIT = config_dict['CLONE_LIMIT']
-            MEGA_LIMIT = config_dict['MEGA_LIMIT']
-            LEECH_LIMIT = config_dict['LEECH_LIMIT']
-            USER_MAX_TASKS = config_dict['USER_MAX_TASKS']
-        
-            torrent_limit = '∞' if TORRENT_LIMIT == '' else f'{TORRENT_LIMIT}GB/Link'
-            clone_limit = '∞' if CLONE_LIMIT == '' else f'{CLONE_LIMIT}GB/Link'
-            gdrive_limit = '∞' if GDRIVE_LIMIT == '' else f'{GDRIVE_LIMIT}GB/Link'
-            mega_limit = '∞' if MEGA_LIMIT == '' else f'{MEGA_LIMIT}GB/Link'
-            leech_limit = '∞' if LEECH_LIMIT == '' else f'{LEECH_LIMIT}GB/Link'
-            user_task = '∞' if USER_MAX_TASKS == '' else f'{USER_MAX_TASKS} Tasks/user'
-            ytdlp_limit = '∞' if YTDLP_LIMIT == '' else f'{YTDLP_LIMIT}GB/Link'
-            direct_limit = '∞' if DIRECT_LIMIT == '' else f'{DIRECT_LIMIT}GB/Link'
-            stats += f'<b>LIMITATIONS</b>\n\n'\
-                f'<code>• Torrent    :</code> {torrent_limit}\n'\
-                f'<code>• Gdrive     :</code> {gdrive_limit}\n'\
-                f'<code>• Ytdlp      :</code> {ytdlp_limit}\n'\
-                f'<code>• Direct     :</code> {direct_limit}\n'\
-                f'<code>• Leech      :</code> {leech_limit}\n'\
-                f'<code>• Clone      :</code> {clone_limit}\n'\
-                f'<code>• Mega       :</code> {mega_limit}\n'\
-                f'<code>• User tasks :</code> {user_task}\n\n'
-    await sendMessage(message, stats)
+        last_commit = (await cmd_exec("git log -1 --date=short --pretty=format:'%cr'", True))[0]
+        version = (await cmd_exec("git describe --abbrev=0 --tags", True))[0]
+        change_log = (await cmd_exec("git log -1 --pretty=format:'%s'", True))[0]
+    else:
+        last_commit = 'No UPSTREAM_REPO'
+        version = 'N/A'
+        change_log = 'N/A'
+
+    sysTime = get_readable_time(time() - boot_time())
+    botTime = get_readable_time(time() - botStartTime)
+    remaining_time = 86400 - (time() - botStartTime)
+    res_time = '⚠️ Soon ⚠️' if remaining_time <= 0 else get_readable_time(remaining_time)
+    total, used, free, disk= disk_usage('/')
+    total = get_readable_file_size(total)
+    used = get_readable_file_size(used)
+    free = get_readable_file_size(free)
+    sent = get_readable_file_size(net_io_counters().bytes_sent)
+    recv = get_readable_file_size(net_io_counters().bytes_recv)
+    cpuUsage = cpu_percent(interval=1)
+    v_core = cpu_count(logical=True) - cpu_count(logical=False)
+    memory = virtual_memory()
+    swap = swap_memory()
+    mem_p = memory.percent
+
+    DIR = 'Unlimited' if config_dict['DIRECT_LIMIT'] == '' else config_dict['DIRECT_LIMIT']
+    YTD = 'Unlimited' if config_dict['YTDLP_LIMIT'] == '' else config_dict['YTDLP_LIMIT']
+    GDL = 'Unlimited' if config_dict['GDRIVE_LIMIT'] == '' else config_dict['GDRIVE_LIMIT']
+    TOR = 'Unlimited' if config_dict['TORRENT_LIMIT'] == '' else config_dict['TORRENT_LIMIT']
+    CLL = 'Unlimited' if config_dict['CLONE_LIMIT'] == '' else config_dict['CLONE_LIMIT']
+    MGA = 'Unlimited' if config_dict['MEGA_LIMIT'] == '' else config_dict['MEGA_LIMIT']
+    TGL = 'Unlimited' if config_dict['LEECH_LIMIT'] == '' else config_dict['LEECH_LIMIT']
+    UMT = 'Unlimited' if config_dict['USER_MAX_TASKS'] == '' else config_dict['USER_MAX_TASKS']
+    BMT = 'Unlimited' if config_dict['QUEUE_ALL'] == '' else config_dict['QUEUE_ALL']
+
+    stats = f'<b><i><u>🄱🄾🅃 🅂🅃🄰🅃🄸🅂🅃🄸🄲🅂</u></i></b>\n\n'\
+            f'<b><i><u>Repo Info</u></i></b>\n' \
+            f'<b>Last Commit:</b> <code>{last_commit}</code>\n' \
+            f'<b>Version:</b> <code>{version}</code>\n' \
+            f'<b>Change Log:</b> <code>{change_log}</code>\n\n' \
+            f'<b><i><u>System Info</u></i></b>\n' \
+            f'<b>SYS UPTM:</b> <code>{sysTime}</code>\n' \
+            f'<b>BOT UPTM:</b> <code>{botTime}</code>\n' \
+            f'<b>BOT Restart:</b> <code>{res_time}</code>\n\n' \
+            f'<b>CPU:</b> <code>{get_progress_bar_string(cpuUsage)} {cpuUsage}%</code>\n' \
+            f'<b>CPU Total Core(s):</b> <code>{cpu_count(logical=True)}</code>\n' \
+            f'<b>P-Core(s):</b> <code>{cpu_count(logical=False)}</code> | <b>V-Core(s):</b> <code>{v_core}</code>\n' \
+            f'<b>Frequency:</b> <code>{cpu_freq(percpu=False).current / 1000:.2f} GHz</code>\n\n' \
+            f'<b>RAM:</b> <code>{get_progress_bar_string(mem_p)} {mem_p}%</code>\n' \
+            f'<b>RAM In Use:</b> <code>{get_readable_file_size(memory.used)}</code> [{mem_p}%]\n' \
+            f'<b>Total:</b> <code>{get_readable_file_size(memory.total)}</code> | <b>Free:</b> <code>{get_readable_file_size(memory.available)}</code>\n\n' \
+            f'<b>SWAP:</b> <code>{get_progress_bar_string(swap.percent)} {swap.percent}%</code>\n' \
+            f'<b>SWAP In Use:</b> <code>{get_readable_file_size(swap.used)}</code> [{swap.percent}%]\n' \
+            f'<b>Allocated</b> <code>{get_readable_file_size(swap.total)}</code> | <b>Free:</b> <code>{get_readable_file_size(swap.free)}</code>\n\n' \
+            f'<b>DISK:</b> <code>{get_progress_bar_string(disk)} {disk}%</code>\n' \
+            f'<b>Drive In Use:</b> <code>{used}</code> [{disk}%]\n' \
+            f'<b>Total:</b> <code>{total}</code> | <b>Free:</b> <code>{free}</code>\n\n' \
+            f'<b>UL:</b> <code>{sent}</code> | <b>DL:</b> <code>{recv}</code>\n\n' \
+            f'<b><i><u>Bot Limitations</u></i></b>\n' \
+            f'<code>Torrent   : {TOR}</code> <b>GB</b>\n' \
+            f'<code>G-Drive   : {GDL}</code> <b>GB</b>\n' \
+            f'<code>Yt-Dlp    : {YTD}</code> <b>GB</b>\n' \
+            f'<code>Direct    : {DIR}</code> <b>GB</b>\n' \
+            f'<code>Clone     : {CLL}</code> <b>GB</b>\n' \
+            f'<code>Leech     : {TGL}</code> <b>GB</b>\n' \
+            f'<code>MEGA      : {MGA}</code> <b>GB</b>\n' \
+            f'<code>User Tasks: {UMT}</code>\n' \
+            f'<code>Bot Tasks : {BMT}</code>'
+    reply_message = await sendMessage(message, stats)
+    await auto_delete_message(message, reply_message)
 
 
 async def start(_, message):
@@ -133,6 +131,7 @@ async def start(_, message):
                        'Gabung kesini @peamasamba.\n' \
                        'Terima Kasih'
     await sendMessage(message, start_string)
+
 
 async def restart(_, message):
     restart_message = await sendMessage(message, "Restarting...")
