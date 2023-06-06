@@ -173,18 +173,18 @@ def get_readable_message():
                     pass
 
         elif download.status() == MirrorStatus.STATUS_SEEDING:
-            msg += f"\n» <b>Size</b> » {download.size()}"
-            msg += f"\n» <b>Speed</b> » {download.upload_speed()}"
+            msg += f"\n <b>Size</b> » {download.size()}"
+            msg += f"\n <b>Speed</b> » {download.upload_speed()}"
             msg += f" | <b>Uploaded</b> » {download.uploaded_bytes()}"
-            msg += f"\n» <b>Ratio</b> » {download.ratio()}"
+            msg += f"\n <b>Ratio</b> » {download.ratio()}"
             msg += f" | <b>Time</b> » {download.seeding_time()}"
         else:
-            msg += f"\n» <b>Size</b> » {download.size()}"
+            msg += f"\n <b>Size</b> » {download.size()}"
 
         if config_dict['DELETE_LINKS']:
-            msg += f"\n» <b>Task</b> » {download.extra_details['mode']}"
+            msg += f"\n <b>Task</b> » {download.extra_details['mode']}"
         else:
-            msg += f"\n» <b>Task</b> » <a href='{download.message.link}'>{download.extra_details['mode']}</a>"
+            msg += f"\n <b>Task</b> » <a href='{download.message.link}'>{download.extra_details['mode']}</a>"
 
         msg += f" | <b>By</b> » {tag}"
         msg += f"\n📵 <code>/{BotCommands.CancelMirror[0]} {download.gid()}</code>\n\n"
