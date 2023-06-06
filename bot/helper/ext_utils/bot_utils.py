@@ -151,7 +151,7 @@ def get_readable_message():
                                      MirrorStatus.STATUS_QUEUEDL, MirrorStatus.STATUS_QUEUEUP, 
                                      MirrorStatus.STATUS_PAUSED]:
 
-            msg += f"\n <code>{download.speed()}</code>"
+            msg += f"\n <b>Speed</b> » <code>{download.speed()}</code>"
             msg += f"\n {get_progress_bar_string(download.progress())} » {download.progress()}"
             msg += f"\n <b>Done</b> » <code>{download.processed_bytes()}</code> of <code>{download.size()}</code>"
             msg += f"\n <b>ETA</b> » <code>{download.eta()}</code> | "
