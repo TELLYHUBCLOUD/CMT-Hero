@@ -130,7 +130,7 @@ def get_progress_bar_string(pct):
 
 
 def get_readable_message():
-    msg = "<b>Powered by Pea Masamba</b>\n\n"
+    msg = "<b>By Pea Masamba</b>\n\n"
     button = None
     STATUS_LIMIT = config_dict['STATUS_LIMIT']
     tasks = len(download_dict)
