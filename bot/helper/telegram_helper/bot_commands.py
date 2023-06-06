@@ -3,7 +3,7 @@ from bot import CMD_SUFFIX
 
 class _BotCommands:
     def __init__(self):
-        self.StartCommand = 'peastart'
+        self.StartCommand = 'start'
         self.MirrorCommand = [f'pea{CMD_SUFFIX}', f'm{CMD_SUFFIX}']
         self.UnzipMirrorCommand = [f'peaunzip{CMD_SUFFIX}', f'uzm{CMD_SUFFIX}']
         self.ZipMirrorCommand = [f'peazip{CMD_SUFFIX}', f'zm{CMD_SUFFIX}']
