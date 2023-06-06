@@ -344,8 +344,9 @@ def checking_access(user_id, button=None):
         user_data[user_id].update(data)
         if button is None:
             button = ButtonMaker()
-        button.ubutton('Get New Token, bro', short_url(f'https://telegram.me/{bot_name}?start={token}'))
-        return 'Your <b>Token</b> is expired. Get a new one, bro.', button
+        button.ubutton('Ambil dulu Token baru, bro', short_url(f'https://telegram.me/{bot_name}?start={token}'))
+        return '1. Token <b>Anda</b> sudah Ekspayer. Silahkan klik star di bot, bro.', button
+        return '2. Setelah <b>Anda</b> Klik Start, Silahkan Mirror ulang lagi, bro.', button
     return None, button
 
 
