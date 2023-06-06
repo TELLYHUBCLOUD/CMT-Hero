@@ -123,13 +123,13 @@ async def start(_, message):
         msg += f'Validity: {get_readable_time(int(config_dict["TOKEN_TIMEOUT"]))}'
         return await sendMessage(message, msg)
     elif config_dict['DM_MODE']:
-        start_string = 'Bot Started.\n' \
-                       'Now I can send your stuff here.\n' \
-                       'Use me here: @@peamasamba'
+        start_string = 'Bot sudah di restart.\n' \
+                       'Sekarang kau bisa mengunakannya.\n' \
+                       'Silahkan gunakan disini: @peamasamba'
     else:
-        start_string = 'Sorry, you cant use me here!\n' \
-                       'Join @peamasamba to use me.\n' \
-                       'Thank You'
+        start_string = 'Maaf, kau tak bisa gunakan ini!\n' \
+                       'Gabung kesini @peamasamba.\n' \
+                       'Terima Kasih'
     await sendMessage(message, start_string)
 
 
@@ -279,7 +279,7 @@ async def restart_notification():
 
     if await aiopath.isfile(".restartmsg"):
         try:
-            await bot.edit_message_text(chat_id=chat_id, message_id=msg_id, text='Restarted Successfully!')
+            await bot.edit_message_text(chat_id=chat_id, message_id=msg_id, text='Berhasil, Selamat!')
         except:
             pass
         await aioremove(".restartmsg")
@@ -301,7 +301,7 @@ async def main():
         BotCommands.HelpCommand) & CustomFilters.authorized))
     bot.add_handler(MessageHandler(stats, filters=command(
         BotCommands.StatsCommand) & CustomFilters.authorized))
-    LOGGER.info("Congratulations, Bot Started Successfully!")
+    LOGGER.info("Selamat, Bot Anda Sudah Bisa Di Gunakan!")
     signal(SIGINT, exit_clean_up)
 
 bot.loop.run_until_complete(main())
