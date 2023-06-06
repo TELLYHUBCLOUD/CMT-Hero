@@ -346,6 +346,8 @@ def checking_access(user_id, button=None):
             button = ButtonMaker()
         button.ubutton('Token Baru', short_url(f'https://telegram.me/{bot_name}?start={token}'))
         button.ubutton('Pea Masamba', short_url(f'https://subscene.com/u/1271292'))
+        button.ubutton('Website', short_url(f'https://www.comelmuewa84.eu.org'))
+        button.ubutton('Mirror', short_url(f'https://t.me/peamasambamirror'))
         return 'Token <b>Anda</b> sudah Ekspayer. Silahkan klik Token Baru, bro.\n\n2. Setelah <b>Anda</b> Klik Start di bot, Silahkan ulangi lagi Mirror-nya, bro.', button        
     return None, button
 
