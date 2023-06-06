@@ -112,7 +112,7 @@ async def start(_, message):
         userid = message.from_user.id
         input_token = message.command[1]
         if userid not in user_data:
-            return await sendMessage(message, 'This token is not yours!\n\nKindly generate your own.')
+            return await sendMessage(message, 'Token ini bukan untukmu!\n\nSilakan buat sendiri.')
         data = user_data[userid]
         if 'token' not in data or data['token'] != input_token:
             return await sendMessage(message, 'Token sudah digunakan!\n\nSilakan buat yang baru.')
