@@ -72,10 +72,10 @@ async def stats(_, message):
 
     stats = f'<b><i><u>🄱🄾🅃 🅂🅃🄰🅃🄸🅂🅃🄸🄲🅂</u></i></b>\n\n'\
             f'<b><i><u>Repo Info</u></i></b>\n' \
-            f'<b>Updated:</b> <code>{last_commit}</code>\n' \
+            f'<b>Last Commit:</b> <code>{last_commit}</code>\n' \
             f'<b>Version:</b> <code>{version}</code>\n' \
             f'<b>Change Log:</b> <code>{change_log}</code>\n\n' \
-            f'<b><i><u>Bot Info</u></i></b>\n' \
+            f'<b><i><u>System Info</u></i></b>\n' \
             f'<b>SYS UPTM:</b> <code>{sysTime}</code>\n' \
             f'<b>BOT UPTM:</b> <code>{botTime}</code>\n' \
             f'<b>BOT Restart:</b> <code>{res_time}</code>\n\n' \
@@ -93,7 +93,7 @@ async def stats(_, message):
             f'<b>Drive In Use:</b> <code>{used}</code> [{disk}%]\n' \
             f'<b>Total:</b> <code>{total}</code> | <b>Free:</b> <code>{free}</code>\n\n' \
             f'<b>UL:</b> <code>{sent}</code> | <b>DL:</b> <code>{recv}</code>\n\n' \
-            f'<b><i><u>Bot Limits</u></i></b>\n' \
+            f'<b><i><u>Bot Limitations</u></i></b>\n' \
             f'<code>Torrent   : {TOR}</code> <b>GB</b>\n' \
             f'<code>G-Drive   : {GDL}</code> <b>GB</b>\n' \
             f'<code>Yt-Dlp    : {YTD}</code> <b>GB</b>\n' \
