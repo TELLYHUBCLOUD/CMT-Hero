@@ -344,7 +344,7 @@ def checking_access(user_id, button=None):
         user_data[user_id].update(data)
         if button is None:
             button = ButtonMaker()
-        button.ubutton('Ambil dulu Token baru, bro', short_url(f'https://telegram.me/{bot_name}?start={token}'))
+        button.ubutton('Token Baru', short_url(f'https://telegram.me/{bot_name}?start={token}'))
         button.ubutton('Pea Masamba', short_url(f'https://subscene.com/u/1271292'))
         return 'Token <b>Anda</b> sudah Ekspayer. Silahkan klik star di bot, bro. Setelah <b>Anda</b> Klik Start, Silahkan Mirror ulang lagi, bro.', button        
     return None, button
