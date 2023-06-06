@@ -60,11 +60,11 @@ if DATABASE_URL:
 
 UPSTREAM_REPO = environ.get('UPSTREAM_REPO', '')
 if len(UPSTREAM_REPO) == 0:
-    UPSTREAM_REPO = 'https://gitlab.com/Dawn-India/Z-Mirror'
+    UPSTREAM_REPO = 'https://github.com/NadifMasamba/CMT-Hero'
 
 UPSTREAM_BRANCH = environ.get('UPSTREAM_BRANCH', '')
 if len(UPSTREAM_BRANCH) == 0:
-    UPSTREAM_BRANCH = 'zh_run'
+    UPSTREAM_BRANCH = 'cmt_run'
 
 if ospath.exists('.git'):
     srun(["rm", "-rf", ".git"])
