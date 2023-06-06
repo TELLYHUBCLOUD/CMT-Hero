@@ -115,11 +115,11 @@ async def start(_, message):
             return await sendMessage(message, 'This token is not yours!\n\nKindly generate your own.')
         data = user_data[userid]
         if 'token' not in data or data['token'] != input_token:
-            return await sendMessage(message, 'Token already used!\n\nKindly generate a new one.')
+            return await sendMessage(message, 'Token sudah digunakan!\n\nSilakan buat yang baru.')
         data['token'] = str(uuid4())
         data['time'] = time()
         user_data[userid].update(data)
-        msg = 'Token refreshed successfully!\n\n'
+        msg = 'Token berhasil diperbarui!\n\n'
         msg += f'Validity: {get_readable_time(int(config_dict["TOKEN_TIMEOUT"]))}'
         return await sendMessage(message, msg)
     elif config_dict['DM_MODE']:
