@@ -134,7 +134,6 @@ async def start(_, message):
                        'Terima Kasih'
     await sendMessage(message, start_string)
 
-
 async def restart(_, message):
     restart_message = await sendMessage(message, "Restarting...")
     if scheduler.running:
