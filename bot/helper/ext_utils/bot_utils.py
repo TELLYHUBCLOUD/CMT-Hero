@@ -145,13 +145,13 @@ def get_readable_message():
         elapsed = time() - download.extra_details['startTime']
 
         msg += f"\n<b><i>{escape(f'{download.name()}')}</i>\n\n" if elapsed <= config_dict['AUTO_DELETE_MESSAGE_DURATION'] else ""
-        msg += f"\n\n<b>{download.status()}</b>"
+        msg += f" <b>{download.status()}</b>"
 
         if download.status() not in [MirrorStatus.STATUS_SEEDING, MirrorStatus.STATUS_CONVERTING,
                                      MirrorStatus.STATUS_QUEUEDL, MirrorStatus.STATUS_QUEUEUP, 
                                      MirrorStatus.STATUS_PAUSED]:
 
-            msg += f"\n <b>Speed</b> » <code>{download.speed()}</code>"
+            msg += f"\n\n <b>Speed</b> » <code>{download.speed()}</code>"
             msg += f"\n {get_progress_bar_string(download.progress())} » {download.progress()}"
             msg += f"\n <b>Done</b> » <code>{download.processed_bytes()}</code> of <code>{download.size()}</code>"
             msg += f"\n <b>ETA</b> » <code>{download.eta()}</code> | "
