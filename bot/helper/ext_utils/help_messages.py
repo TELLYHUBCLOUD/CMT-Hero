@@ -63,7 +63,7 @@ You can set start and end of the links from the bulk with b:start:end or only en
 
 Check all yt-dlp api options from this <a href='https://github.com/yt-dlp/yt-dlp/blob/master/yt_dlp/YoutubeDL.py#L184'>FILE</a> or use this <a href='https://graph.org/Script-to-convert-cli-arguments-to-api-options-05-28'>SCRIPT</a> to convert cli arguments to api options.
 
-<b>Powered By @Z_Mirror</b>
+<b>By Pea Masamba</b>
 """
 
 MIRROR_HELP_MESSAGE = """
@@ -150,7 +150,7 @@ You can set start and end of the links from the bulk with b:start:end or only en
 4. Commands that start with <b>qb</b> are ONLY for torrents.
 5. (n:) option doesn't work with torrents.
 
-<b>Powered By @Z_Mirror</b>
+<b>By Pea Masamba</b>
 """
 
 
@@ -178,7 +178,7 @@ Filter Notes:
 4. Take look on title if it has static special character after or before the qualities or extensions or whatever and use them in filter to avoid wrong match.
 Timeout: 60 sec.
 
-<b>Powered By @Z_Mirror</b>
+<b>By Pea Masamba</b>
 """
 
 CLONE_HELP_MESSAGE = """
@@ -199,7 +199,7 @@ drive_id must be folder id and index must be url else it will not accept
 Notes:
 if up: not specified then rclone destination will be the RCLONE_PATH from config.env
 
-<b>Powered By @Z_Mirror</b>
+<b>By Pea Masamba</b>
 """
 
 CAT_SEL_HELP_MESSAGE = """
@@ -221,5 +221,5 @@ Reply to an active <code>/{cmd}</code> which was used to start the qb-download o
 This command mainly for selection incase you decided to select files from already added torrent.
 But you can always use <code>/{mir}</code> with arg `s` to select files before download start.
 
-<b>Powered By @Z_Mirror</b>
+<b>By Pea Masamba</b>
 """
