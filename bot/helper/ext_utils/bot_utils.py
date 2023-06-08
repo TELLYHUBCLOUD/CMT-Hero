@@ -156,42 +156,42 @@ def get_readable_message():
                                      MirrorStatus.STATUS_PAUSED]:
 
             msg += f"\n\n {get_progress_bar_string(download.progress())} » {download.progress()}"
-            msg += f"\n <b>Speed</b> » <code>{download.speed()}</code>"            
-            msg += f"\n <b>Done</b> » <code>{download.processed_bytes()}</code> of <code>{download.size()}</code>"
-            msg += f"\n <b>ETA</b> » <code>{download.eta()}</code> | "
-            msg += f"<b>Elp</b> » <code>{get_readable_time(elapsed)}</code>"
-            msg += f"\n <b>Engine</b> » <code>{download.engine}</code>"
+            msg += f"\n <b>Speed:</b> <code>{download.speed()}</code>"            
+            msg += f"\n <b>Done:</b> <code>{download.processed_bytes()}</code> of <code>{download.size()}</code>"
+            msg += f"\n <b>ETA:</b> <code>{download.eta()}</code> | "
+            msg += f"<b>Elp:</b> <code>{get_readable_time(elapsed)}</code>"
+            msg += f"\n <b>Engine:</b> <code>{download.engine}</code>"
 
             if hasattr(download, 'playList'):
                 try:
                     if playlist:=download.playList():
-                        msg += f"\n <b>Playlist Count</b> » {playlist}"
+                        msg += f"\n <b>Playlist Count:</b> {playlist}"
                 except:
                     pass
 
             if hasattr(download, 'seeders_num'):
                 try:
-                    msg += f"\n <b>Seeders</b> » {download.seeders_num()}"
-                    msg += f" | <b>Leechers</b> » {download.leechers_num()}"
+                    msg += f"\n <b>Seeders:</b> {download.seeders_num()}"
+                    msg += f" | <b>Leechers:</b> {download.leechers_num()}"
                 except:
                     pass
 
         elif download.status() == MirrorStatus.STATUS_SEEDING:
-            msg += f"\n <b>Size</b> » {download.size()}"
-            msg += f"\n <b>Speed</b> » {download.upload_speed()}"
-            msg += f" | <b>Uploaded</b> » {download.uploaded_bytes()}"
-            msg += f"\n <b>Ratio</b> » {download.ratio()}"
-            msg += f" | <b>Time</b> » {download.seeding_time()}"
+            msg += f"\n <b>Size:</b> {download.size()}"
+            msg += f"\n <b>Speed:</b> {download.upload_speed()}"
+            msg += f" | <b>Uploaded:</b> {download.uploaded_bytes()}"
+            msg += f"\n <b>Ratio:</b> {download.ratio()}"
+            msg += f" | <b>Time:</b> {download.seeding_time()}"
         else:
-            msg += f"\n <b>Size</b> » {download.size()}"
+            msg += f"\n <b>Size:</b> {download.size()}"
 
         if config_dict['DELETE_LINKS']:
-            msg += f"\n <b>Upload</b> » {download.extra_details['mode']}"
+            msg += f"\n <b>Upload:</b> {download.extra_details['mode']}"
         else:
-            msg += f"\n <b>Upload</b> » <a href='{download.message.link}'>{download.extra_details['mode']}</a>"
+            msg += f"\n <b>Upload:</b> <a href='{download.message.link}'>{download.extra_details['mode']}</a>"
 
-        msg += f" | <b>By</b> » {tag}"
-        msg += f"\n Stop</b> » <code>/{BotCommands.CancelMirror[0]} {download.gid()}</code>"
+        msg += f" | <b>By:</b> {tag}"
+        msg += f"\n Stop:</b> <code>/{BotCommands.CancelMirror[0]} {download.gid()}</code>"
         msg += f"\n<b>▬▬▬▬▬▬▬▬▬▬▬▬▬</b>"
         msg += "\n\n"
 
