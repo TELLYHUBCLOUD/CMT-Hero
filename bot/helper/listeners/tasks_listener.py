@@ -378,7 +378,7 @@ class MirrorLeechListener:
         msg = f'\n\n<b>Size</b>: {get_readable_file_size(size)}'
         msg += f"\n<b>Elapsed</b>: {get_readable_time(time() - self.extra_details['startTime'])}"
         msg += f"\n<b>Upload</b>: {self.extra_details['mode']}"
-        gmsg = f'Hasil mirror anda sudah kami pindahkan<a href='https://t.me/peamasambamirror'>𝑲𝒆 𝑺𝒊𝒏𝒊.'
+        msg += f"\n<b>Hasil mirror anda sudah kami pindahkan<a href='https://t.me/peamasambamirror'>𝑲𝒆 𝑺𝒊𝒏𝒊."
         _msg = '' if rclonePath == '' else f'\n\n<b>Path</b>: <code>{rclonePath}</code>'
         msg_ = '\n\n<b>Hasil mirror anda sudah kami pindahkan.</b>'
         buttons = ButtonMaker()
