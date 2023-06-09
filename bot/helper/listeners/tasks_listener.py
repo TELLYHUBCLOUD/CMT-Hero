@@ -386,7 +386,7 @@ class MirrorLeechListener:
             msg += f'\n<b>Total Files</b>: {folders}\n'
             if mime_type != 0:
                 msg += f'\n<b>Corrupted Files</b>: {mime_type}\n'
-            msg_ = '\n<b>@peamasambamirror.</b>'
+            msg_ = '\n<b>Di pindahkan kesini @peamasambamirror.</b>'
             if not self.dmMessage:
                 if not files:
                     await sendMessage(self.message, lmsg + msg)
