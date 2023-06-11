@@ -37,32 +37,46 @@ from .modules import (anonymous, authorize, bot_settings, cancel_mirror,
 
 async def stats(_, message):
     total, used, free, disk = disk_usage('/')
-    swap = swap_memory()
     memory = virtual_memory()
-    net_io = net_io_counters()
-    if await aiopath.exists('.git'):
-        last_commit = await cmd_exec("git log -1 --date=short --pretty=format:'%cd <b>From</b> %cr'", True)
-        last_commit = last_commit[0]
-    else:
-        last_commit = 'No UPSTREAM_REPO'
-    stats = f'<b>Commit Date</b>: {last_commit}\n\n'\
-            f'<b>Bot Uptime</b>: {get_readable_time(time() - botStartTime)}\n'\
-            f'<b>OS Uptime</b>: {get_readable_time(time() - boot_time())}\n\n'\
-            f'<b>Total Disk Space </b>: {get_readable_file_size(total)}\n'\
-            f'<b>Used</b>: {get_readable_file_size(used)} | <b>Free</b>: {get_readable_file_size(free)}\n\n'\
-            f'<b>Upload</b>: {get_readable_file_size(net_io.bytes_sent)}\n'\
-            f'<b>Download</b>: {get_readable_file_size(net_io.bytes_recv)}\n\n'\
-            f'<b>CPU</b>: {cpu_percent(interval=0.5)}%\n'\
-            f'<b>RAM</b>: {memory.percent}%\n'\
-            f'<b>DISK</b>: {disk}%\n\n'\
-            f'<b>Physical Cores</b>: {cpu_count(logical=False)}\n'\
-            f'<b>Total Cores</b>: {cpu_count(logical=True)}\n\n'\
-            f'<b>SWAP</b>: {get_readable_file_size(swap.total)} | <b>Used</b>: {swap.percent}%\n'\
-            f'<b>Memory Total</b>: {get_readable_file_size(memory.total)}\n'\
-            f'<b>Memory Free</b>: {get_readable_file_size(memory.available)}\n'\
-            f'<b>Memory Used</b>: {get_readable_file_size(memory.used)}\n'
+    currentTime = get_readable_time(time() - botStartTime)
+    mem_p = memory.percent
+    osUptime = get_readable_time(time() - boot_time())
+    cpuUsage = cpu_percent(interval=0.5)
+    stats = f'<b>SYSTEM INFO</b>\n\n'\
+            f'<code>• Bot uptime :</code> {currentTime}\n'\
+            f'<code>• Sys uptime :</code> {osUptime}\n'\
+            f'<code>• CPU usage  :</code> {cpuUsage}%\n'\
+            f'<code>• RAM usage  :</code> {mem_p}%\n'\
+            f'<code>• Disk usage :</code> {disk}%\n'\
+            f'<code>• Disk space :</code> {get_readable_file_size(free)}/{get_readable_file_size(total)}\n\n'\
+            
+    if config_dict['SHOW_LIMITS']:
+        DIRECT_LIMIT = config_dict['DIRECT_LIMIT']
+        YTDLP_LIMIT = config_dict['YTDLP_LIMIT']
+        GDRIVE_LIMIT = config_dict['GDRIVE_LIMIT']
+        TORRENT_LIMIT = config_dict['TORRENT_LIMIT']
+        CLONE_LIMIT = config_dict['CLONE_LIMIT']
+        MEGA_LIMIT = config_dict['MEGA_LIMIT']
+        LEECH_LIMIT = config_dict['LEECH_LIMIT']
+        USER_MAX_TASKS = config_dict['USER_MAX_TASKS']
+        torrent_limit = '∞' if TORRENT_LIMIT == '' else f'{TORRENT_LIMIT}GB/Link'
+        clone_limit = '∞' if CLONE_LIMIT == '' else f'{CLONE_LIMIT}GB/Link'
+        gdrive_limit = '∞' if GDRIVE_LIMIT == '' else f'{GDRIVE_LIMIT}GB/Link'
+        mega_limit = '∞' if MEGA_LIMIT == '' else f'{MEGA_LIMIT}GB/Link'
+        leech_limit = '∞' if LEECH_LIMIT == '' else f'{LEECH_LIMIT}GB/Link'
+        user_task = '∞' if USER_MAX_TASKS == '' else f'{USER_MAX_TASKS} Tasks/user'
+        ytdlp_limit = '∞' if YTDLP_LIMIT == '' else f'{YTDLP_LIMIT}GB/Link'
+        direct_limit = '∞' if DIRECT_LIMIT == '' else f'{DIRECT_LIMIT}GB/Link'
+        stats += f'<b>LIMITATIONS</b>\n\n'\
+                f'<code>• Torrent    :</code> {torrent_limit}\n'\
+                f'<code>• Gdrive     :</code> {gdrive_limit}\n'\
+                f'<code>• Ytdlp      :</code> {ytdlp_limit}\n'\
+                f'<code>• Direct     :</code> {direct_limit}\n'\
+                f'<code>• Leech      :</code> {leech_limit}\n'\
+                f'<code>• Clone      :</code> {clone_limit}\n'\
+                f'<code>• Mega       :</code> {mega_limit}\n'\
+                f'<code>• User tasks :</code> {user_task}\n\n'
     await sendMessage(message, stats)
-
 
 async def start(_, message):
     if len(message.command) > 1:
@@ -81,9 +95,7 @@ async def start(_, message):
         start_string = 'Bot Started.\n' \
             'Now I will send your files and links here.\n'
     else:
-        start_string = '🌹 Welcome To One Of A Modified Anasty Mirror Bot\n' \
-            'This bot can Mirror all your links To Google Drive!\n' \
-            '👨🏽‍💻 Powered By: @JMDKH_Team'
+        start_string = 'This bot can dance\n'
     await sendMessage(message, start_string)
 
 
@@ -95,7 +107,7 @@ async def restart(_, message):
         if interval:
             interval[0].cancel()
     await sync_to_async(clean_all)
-    proc1 = await create_subprocess_exec('pkill', '-9', '-f', 'gunicorn|aria2c|qbittorrent-nox|ffmpeg|rclone')
+    proc1 = await create_subprocess_exec('pkill', '-9', '-f', '-e', 'gunicorn|buffet|openstack|render|zcl')
     proc2 = await create_subprocess_exec('python3', 'update.py')
     await gather(proc1.wait(), proc2.wait())
     async with aiopen(".restartmsg", "w") as f:
