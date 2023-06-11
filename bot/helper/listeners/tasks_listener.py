@@ -380,7 +380,7 @@ class MirrorLeechListener:
         msg += f"\n<b>Upload</b>: {self.extra_details['mode']}"
         msg += f"\n<b>Hasil mirror anda sudah kami pindahkan."
         _msg = '' if rclonePath == '' else f'\n\n<b>Path</b>: <code>{rclonePath}</code>'
-        msg_ = '\n\n<b>'Di pindahkan kesini', '@peamasambamirror')</b>'
+        msg_ = '\n\n<b>'Di pindahkan kesini', 'https://t.me/peamasambamirror')</b>'
         buttons = ButtonMaker()
         if self.isLeech:
             msg += f'\n<b>Total Files</b>: {folders}\n'
