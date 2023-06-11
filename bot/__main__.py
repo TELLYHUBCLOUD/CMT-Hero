@@ -35,98 +35,66 @@ from .modules import (anonymous, authorize, bot_settings, cancel_mirror,
 
 
 async def stats(_, message):
-    if await aiopath.exists('.git'):
-        last_commit = (await cmd_exec("git log -1 --date=short --pretty=format:'%cr'", True))[0]
-        version = (await cmd_exec("git describe --abbrev=0 --tags", True))[0]
-        change_log = (await cmd_exec("git log -1 --pretty=format:'%s'", True))[0]
-    else:
-        last_commit = 'No UPSTREAM_REPO'
-        version = 'N/A'
-        change_log = 'N/A'
-
-    sysTime = get_readable_time(time() - boot_time())
-    botTime = get_readable_time(time() - botStartTime)
-    total, used, free, disk= disk_usage('/')
-    total = get_readable_file_size(total)
-    used = get_readable_file_size(used)
-    free = get_readable_file_size(free)
-    sent = get_readable_file_size(net_io_counters().bytes_sent)
-    recv = get_readable_file_size(net_io_counters().bytes_recv)
-    cpuUsage = cpu_percent(interval=1)
-    v_core = cpu_count(logical=True) - cpu_count(logical=False)
+    total, used, free, disk = disk_usage('/')
     memory = virtual_memory()
-    swap = swap_memory()
+    currentTime = get_readable_time(time() - botStartTime)
     mem_p = memory.percent
-
-    DIR = 'Unlimited' if config_dict['DIRECT_LIMIT'] == '' else config_dict['DIRECT_LIMIT']
-    YTD = 'Unlimited' if config_dict['YTDLP_LIMIT'] == '' else config_dict['YTDLP_LIMIT']
-    GDL = 'Unlimited' if config_dict['GDRIVE_LIMIT'] == '' else config_dict['GDRIVE_LIMIT']
-    TOR = 'Unlimited' if config_dict['TORRENT_LIMIT'] == '' else config_dict['TORRENT_LIMIT']
-    CLL = 'Unlimited' if config_dict['CLONE_LIMIT'] == '' else config_dict['CLONE_LIMIT']
-    MGA = 'Unlimited' if config_dict['MEGA_LIMIT'] == '' else config_dict['MEGA_LIMIT']
-    TGL = 'Unlimited' if config_dict['LEECH_LIMIT'] == '' else config_dict['LEECH_LIMIT']
-    UMT = 'Unlimited' if config_dict['USER_MAX_TASKS'] == '' else config_dict['USER_MAX_TASKS']
-    BMT = 'Unlimited' if config_dict['QUEUE_ALL'] == '' else config_dict['QUEUE_ALL']
-
-    stats = f'<b><i><u>🄱🄾🅃 🅂🅃🄰🅃🄸🅂🅃🄸🄲🅂</u></i></b>\n\n'\
-            f'<b><i><u>Repo Info</u></i></b>\n' \
-            f'<b>Updated:</b> <code>{last_commit}</code>\n' \
-            f'<b>Version:</b> <code>{version}</code>\n' \
-            f'<b>Change Log:</b> <code>{change_log}</code>\n\n' \
-            f'<b><i><u>Bot Info</u></i></b>\n' \
-            f'<b>SYS UPTM:</b> <code>{sysTime}</code>\n' \
-            f'<b>BOT UPTM:</b> <code>{botTime}</code>\n\n' \
-            f'<b>CPU:</b> <code>{get_progress_bar_string(cpuUsage)} {cpuUsage}%</code>\n' \
-            f'<b>CPU Total Core(s):</b> <code>{cpu_count(logical=True)}</code>\n' \
-            f'<b>P-Core(s):</b> <code>{cpu_count(logical=False)}</code> | <b>V-Core(s):</b> <code>{v_core}</code>\n' \
-            f'<b>Frequency:</b> <code>{cpu_freq(percpu=False).current / 1000:.2f} GHz</code>\n\n' \
-            f'<b>RAM:</b> <code>{get_progress_bar_string(mem_p)} {mem_p}%</code>\n' \
-            f'<b>RAM In Use:</b> <code>{get_readable_file_size(memory.used)}</code> [{mem_p}%]\n' \
-            f'<b>Total:</b> <code>{get_readable_file_size(memory.total)}</code> | <b>Free:</b> <code>{get_readable_file_size(memory.available)}</code>\n\n' \
-            f'<b>SWAP:</b> <code>{get_progress_bar_string(swap.percent)} {swap.percent}%</code>\n' \
-            f'<b>SWAP In Use:</b> <code>{get_readable_file_size(swap.used)}</code> [{swap.percent}%]\n' \
-            f'<b>Allocated</b> <code>{get_readable_file_size(swap.total)}</code> | <b>Free:</b> <code>{get_readable_file_size(swap.free)}</code>\n\n' \
-            f'<b>DISK:</b> <code>{get_progress_bar_string(disk)} {disk}%</code>\n' \
-            f'<b>Drive In Use:</b> <code>{used}</code> [{disk}%]\n' \
-            f'<b>Total:</b> <code>{total}</code> | <b>Free:</b> <code>{free}</code>\n\n' \
-            f'<b>UL:</b> <code>{sent}</code> | <b>DL:</b> <code>{recv}</code>\n\n' \
-            f'<b><i><u>Bot Limits</u></i></b>\n' \
-            f'<code>Torrent   : {TOR}</code> <b>GB</b>\n' \
-            f'<code>G-Drive   : {GDL}</code> <b>GB</b>\n' \
-            f'<code>Yt-Dlp    : {YTD}</code> <b>GB</b>\n' \
-            f'<code>Direct    : {DIR}</code> <b>GB</b>\n' \
-            f'<code>Clone     : {CLL}</code> <b>GB</b>\n' \
-            f'<code>Leech     : {TGL}</code> <b>GB</b>\n' \
-            f'<code>MEGA      : {MGA}</code> <b>GB</b>\n' \
-            f'<code>User Tasks: {UMT}</code>\n' \
-            f'<code>Bot Tasks : {BMT}</code>'
-    reply_message = await sendMessage(message, stats)
-    await auto_delete_message(message, reply_message)
-
+    osUptime = get_readable_time(time() - boot_time())
+    cpuUsage = cpu_percent(interval=0.5)
+    stats = f'<b>SYSTEM INFO</b>\n\n'\
+            f'<code>• Bot uptime :</code> {currentTime}\n'\
+            f'<code>• Sys uptime :</code> {osUptime}\n'\
+            f'<code>• CPU usage  :</code> {cpuUsage}%\n'\
+            f'<code>• RAM usage  :</code> {mem_p}%\n'\
+            f'<code>• Disk usage :</code> {disk}%\n'\
+            f'<code>• Disk space :</code> {get_readable_file_size(free)}/{get_readable_file_size(total)}\n\n'\
+            
+    if config_dict['SHOW_LIMITS']:
+        DIRECT_LIMIT = config_dict['DIRECT_LIMIT']
+        YTDLP_LIMIT = config_dict['YTDLP_LIMIT']
+        GDRIVE_LIMIT = config_dict['GDRIVE_LIMIT']
+        TORRENT_LIMIT = config_dict['TORRENT_LIMIT']
+        CLONE_LIMIT = config_dict['CLONE_LIMIT']
+        MEGA_LIMIT = config_dict['MEGA_LIMIT']
+        LEECH_LIMIT = config_dict['LEECH_LIMIT']
+        USER_MAX_TASKS = config_dict['USER_MAX_TASKS']
+        torrent_limit = '∞' if TORRENT_LIMIT == '' else f'{TORRENT_LIMIT}GB/Link'
+        clone_limit = '∞' if CLONE_LIMIT == '' else f'{CLONE_LIMIT}GB/Link'
+        gdrive_limit = '∞' if GDRIVE_LIMIT == '' else f'{GDRIVE_LIMIT}GB/Link'
+        mega_limit = '∞' if MEGA_LIMIT == '' else f'{MEGA_LIMIT}GB/Link'
+        leech_limit = '∞' if LEECH_LIMIT == '' else f'{LEECH_LIMIT}GB/Link'
+        user_task = '∞' if USER_MAX_TASKS == '' else f'{USER_MAX_TASKS} Tasks/user'
+        ytdlp_limit = '∞' if YTDLP_LIMIT == '' else f'{YTDLP_LIMIT}GB/Link'
+        direct_limit = '∞' if DIRECT_LIMIT == '' else f'{DIRECT_LIMIT}GB/Link'
+        stats += f'<b>LIMITATIONS</b>\n\n'\
+                f'<code>• Torrent    :</code> {torrent_limit}\n'\
+                f'<code>• Gdrive     :</code> {gdrive_limit}\n'\
+                f'<code>• Ytdlp      :</code> {ytdlp_limit}\n'\
+                f'<code>• Direct     :</code> {direct_limit}\n'\
+                f'<code>• Leech      :</code> {leech_limit}\n'\
+                f'<code>• Clone      :</code> {clone_limit}\n'\
+                f'<code>• Mega       :</code> {mega_limit}\n'\
+                f'<code>• User tasks :</code> {user_task}\n\n'
+    await sendMessage(message, stats)
 
 async def start(_, message):
     if len(message.command) > 1:
         userid = message.from_user.id
         input_token = message.command[1]
         if userid not in user_data:
-            return await sendMessage(message, 'This token is not yours!\n\nKindly generate your own.')
+            return await sendMessage(message, 'Who are you?')
         data = user_data[userid]
         if 'token' not in data or data['token'] != input_token:
-            return await sendMessage(message, 'Token already used!\n\nKindly generate a new one.')
+            return await sendMessage(message, 'This is a token already expired')
         data['token'] = str(uuid4())
         data['time'] = time()
         user_data[userid].update(data)
-        msg = 'Token refreshed successfully!\n\n'
-        msg += f'Validity: {get_readable_time(int(config_dict["TOKEN_TIMEOUT"]))}'
-        return await sendMessage(message, msg)
+        return await sendMessage(message, 'Token refreshed successfully!')
     elif config_dict['DM_MODE']:
         start_string = 'Bot Started.\n' \
-                       'Now I can send your stuff here.\n' \
-                       'Use me here: @peamasamba'
+            'Now I will send your files and links here.\n'
     else:
-        start_string = 'Sorry, you cant use me here!\n' \
-                       'Join @peamasamba to use me.\n' \
-                       'Thank You'
+        start_string = 'This bot can dance\n'
     await sendMessage(message, start_string)
 
 
@@ -138,22 +106,23 @@ async def restart(_, message):
         if interval:
             interval[0].cancel()
     await sync_to_async(clean_all)
-    proc1 = await create_subprocess_exec('pkill', '-9', '-f', 'gunicorn|aria2c|qbittorrent-nox|ffmpeg|rclone')
+    proc1 = await create_subprocess_exec('pkill', '-9', '-f', '-e', 'gunicorn|buffet|openstack|render|zcl')
     proc2 = await create_subprocess_exec('python3', 'update.py')
     await gather(proc1.wait(), proc2.wait())
     async with aiopen(".restartmsg", "w") as f:
         await f.write(f"{restart_message.chat.id}\n{restart_message.id}\n")
     osexecl(executable, executable, "-m", "bot")
 
+
 async def ping(_, message):
-    start_time = monotonic()
+    start_time = int(round(time() * 1000))
     reply = await sendMessage(message, "Starting Ping")
-    end_time = monotonic()
-    ping_time = int((end_time - start_time) * 1000)
-    await editMessage(reply, f'{ping_time} ms')
+    end_time = int(round(time() * 1000))
+    await editMessage(reply, f'{end_time - start_time} ms')
+
 
 async def log(_, message):
-    await sendFile(message, 'Z_Logs.txt')
+    await sendFile(message, 'log.txt')
 
 help_string = f'''
 <b>NOTE: Click on any CMD to see more detalis.</b>
