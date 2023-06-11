@@ -171,8 +171,8 @@ def get_readable_message():
 
             if hasattr(download, 'seeders_num'):
                 try:
-                    msg += f"\n <b>Seeders:</b> {download.seeders_num()}"
-                    msg += f" | <b>Leechers:</b> {download.leechers_num()}"
+                    msg += f"\n <b>Seeders:</b> <code>{download.seeders_num()}</code>"
+                    msg += f" | <b>Leechers:</b> <code>{download.leechers_num()}</code>"
                 except:
                     pass
 
@@ -186,7 +186,7 @@ def get_readable_message():
             msg += f"\n <b>Size:</b> {download.size()}"
 
         if config_dict['DELETE_LINKS']:
-            msg += f"\n <b>Upload:</b> {download.extra_details['mode']}"
+            msg += f"\n <b>Upload:</b> <code>{download.extra_details['mode']}</code>"
         else:
             msg += f"\n <b>Upload:</b> <a href='{download.message.link}'>{download.extra_details['mode']}</a>"
 
@@ -224,7 +224,7 @@ def get_readable_message():
         buttons.ibutton("⫸", "status nex")
         button = buttons.build_menu(3)    
     msg += f"\n<b>🄰🄽🄰🄺 🄼🄰🅂🄰🄼🄱🄰</b>"
-    msg += f"\n<b>TASKS</b>: {tasks}"
+    msg += f"\n<b>TASKS</b>: <code>{tasks}</code>"
     msg += f" | <b>CPU</b>: <code>{cpu_percent()}%</code>"
     msg += f"\n<b>DISK</b>: <code>{get_readable_file_size(disk_usage(config_dict['DOWNLOAD_DIR']).free)}</code>"
     msg += f" | <b>RAM</b>: <code>{virtual_memory().percent}%</code>"
