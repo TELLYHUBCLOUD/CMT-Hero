@@ -1,14 +1,15 @@
+#!/usr/bin/env python3
 from asyncio import create_subprocess_exec, gather
 from os import execl as osexecl
 from signal import SIGINT, signal
 from sys import executable
-from time import time, sleep, monotonic
+from time import time
 from uuid import uuid4
 
 from aiofiles import open as aiopen
 from aiofiles.os import path as aiopath
 from aiofiles.os import remove as aioremove
-from psutil import (boot_time, cpu_count, cpu_percent, cpu_freq, disk_usage,
+from psutil import (boot_time, cpu_count, cpu_percent, disk_usage,
                     net_io_counters, swap_memory, virtual_memory)
 from pyrogram.filters import command
 from pyrogram.handlers import MessageHandler
@@ -20,61 +21,46 @@ from bot.helper.listeners.aria2_listener import start_aria2_listener
 
 from .helper.ext_utils.bot_utils import (cmd_exec, get_readable_file_size,
                                          get_readable_time, set_commands,
-                                         sync_to_async, get_progress_bar_string)
+                                         sync_to_async)
 from .helper.ext_utils.db_handler import DbManger
 from .helper.ext_utils.fs_utils import clean_all, exit_clean_up, start_cleanup
 from .helper.telegram_helper.bot_commands import BotCommands
 from .helper.telegram_helper.filters import CustomFilters
 from .helper.telegram_helper.message_utils import (editMessage, sendFile,
-                                                   sendMessage, auto_delete_message)
+                                                   sendMessage)
 from .modules import (anonymous, authorize, bot_settings, cancel_mirror,
                       category_select, clone, eval, gd_count, gd_delete,
                       gd_list, leech_del, mirror_leech, rmdb, rss,
-                      shell, status, torrent_search,
+                      save_message, shell, status, torrent_search,
                       torrent_select, users_settings, ytdlp)
 
 
 async def stats(_, message):
     total, used, free, disk = disk_usage('/')
+    swap = swap_memory()
     memory = virtual_memory()
-    currentTime = get_readable_time(time() - botStartTime)
-    mem_p = memory.percent
-    osUptime = get_readable_time(time() - boot_time())
-    cpuUsage = cpu_percent(interval=0.5)
-    stats = f'<b>SYSTEM INFO</b>\n\n'\
-            f'<code>• Bot uptime :</code> {currentTime}\n'\
-            f'<code>• Sys uptime :</code> {osUptime}\n'\
-            f'<code>• CPU usage  :</code> {cpuUsage}%\n'\
-            f'<code>• RAM usage  :</code> {mem_p}%\n'\
-            f'<code>• Disk usage :</code> {disk}%\n'\
-            f'<code>• Disk space :</code> {get_readable_file_size(free)}/{get_readable_file_size(total)}\n\n'\
-            
-    if config_dict['SHOW_LIMITS']:
-        DIRECT_LIMIT = config_dict['DIRECT_LIMIT']
-        YTDLP_LIMIT = config_dict['YTDLP_LIMIT']
-        GDRIVE_LIMIT = config_dict['GDRIVE_LIMIT']
-        TORRENT_LIMIT = config_dict['TORRENT_LIMIT']
-        CLONE_LIMIT = config_dict['CLONE_LIMIT']
-        MEGA_LIMIT = config_dict['MEGA_LIMIT']
-        LEECH_LIMIT = config_dict['LEECH_LIMIT']
-        USER_MAX_TASKS = config_dict['USER_MAX_TASKS']
-        torrent_limit = '∞' if TORRENT_LIMIT == '' else f'{TORRENT_LIMIT}GB/Link'
-        clone_limit = '∞' if CLONE_LIMIT == '' else f'{CLONE_LIMIT}GB/Link'
-        gdrive_limit = '∞' if GDRIVE_LIMIT == '' else f'{GDRIVE_LIMIT}GB/Link'
-        mega_limit = '∞' if MEGA_LIMIT == '' else f'{MEGA_LIMIT}GB/Link'
-        leech_limit = '∞' if LEECH_LIMIT == '' else f'{LEECH_LIMIT}GB/Link'
-        user_task = '∞' if USER_MAX_TASKS == '' else f'{USER_MAX_TASKS} Tasks/user'
-        ytdlp_limit = '∞' if YTDLP_LIMIT == '' else f'{YTDLP_LIMIT}GB/Link'
-        direct_limit = '∞' if DIRECT_LIMIT == '' else f'{DIRECT_LIMIT}GB/Link'
-        stats += f'<b>LIMITATIONS</b>\n\n'\
-                f'<code>• Torrent    :</code> {torrent_limit}\n'\
-                f'<code>• Gdrive     :</code> {gdrive_limit}\n'\
-                f'<code>• Ytdlp      :</code> {ytdlp_limit}\n'\
-                f'<code>• Direct     :</code> {direct_limit}\n'\
-                f'<code>• Leech      :</code> {leech_limit}\n'\
-                f'<code>• Clone      :</code> {clone_limit}\n'\
-                f'<code>• Mega       :</code> {mega_limit}\n'\
-                f'<code>• User tasks :</code> {user_task}\n\n'
+    net_io = net_io_counters()
+    if await aiopath.exists('.git'):
+        last_commit = await cmd_exec("git log -1 --date=short --pretty=format:'%cd <b>From</b> %cr'", True)
+        last_commit = last_commit[0]
+    else:
+        last_commit = 'No UPSTREAM_REPO'
+    stats = f'<b>Commit Date</b>: {last_commit}\n\n'\
+            f'<b>Bot Uptime</b>: {get_readable_time(time() - botStartTime)}\n'\
+            f'<b>OS Uptime</b>: {get_readable_time(time() - boot_time())}\n\n'\
+            f'<b>Total Disk Space </b>: {get_readable_file_size(total)}\n'\
+            f'<b>Used</b>: {get_readable_file_size(used)} | <b>Free</b>: {get_readable_file_size(free)}\n\n'\
+            f'<b>Upload</b>: {get_readable_file_size(net_io.bytes_sent)}\n'\
+            f'<b>Download</b>: {get_readable_file_size(net_io.bytes_recv)}\n\n'\
+            f'<b>CPU</b>: {cpu_percent(interval=0.5)}%\n'\
+            f'<b>RAM</b>: {memory.percent}%\n'\
+            f'<b>DISK</b>: {disk}%\n\n'\
+            f'<b>Physical Cores</b>: {cpu_count(logical=False)}\n'\
+            f'<b>Total Cores</b>: {cpu_count(logical=True)}\n\n'\
+            f'<b>SWAP</b>: {get_readable_file_size(swap.total)} | <b>Used</b>: {swap.percent}%\n'\
+            f'<b>Memory Total</b>: {get_readable_file_size(memory.total)}\n'\
+            f'<b>Memory Free</b>: {get_readable_file_size(memory.available)}\n'\
+            f'<b>Memory Used</b>: {get_readable_file_size(memory.used)}\n'
     await sendMessage(message, stats)
 
 
@@ -83,24 +69,21 @@ async def start(_, message):
         userid = message.from_user.id
         input_token = message.command[1]
         if userid not in user_data:
-            return await sendMessage(message, 'Token ini bukan untukmu!\n\nSilakan buat sendiri.')
+            return await sendMessage(message, 'Who are you?')
         data = user_data[userid]
         if 'token' not in data or data['token'] != input_token:
-            return await sendMessage(message, 'Token sudah digunakan!\n\nSilakan buat yang baru.')
+            return await sendMessage(message, 'This is a token already expired')
         data['token'] = str(uuid4())
         data['time'] = time()
         user_data[userid].update(data)
-        msg = 'Token berhasil diperbarui!\n\n'
-        msg += f'Masa Token Berlaku: {get_readable_time(int(config_dict["TOKEN_TIMEOUT"]))}'
-        return await sendMessage(message, msg)
+        return await sendMessage(message, 'Token refreshed successfully!')
     elif config_dict['DM_MODE']:
-        start_string = 'Bot sudah di restart.\n' \
-                       'Sekarang kau bisa mengunakannya.\n' \
-                       'Silahkan gunakan disini: @peamasamba'
+        start_string = 'Bot Started.\n' \
+            'Now I will send your files and links here.\n'
     else:
-        start_string = 'Maaf, kau tak bisa gunakan ini!\n' \
-                       'Gabung kesini @peamasamba.\n' \
-                       'Terima Kasih'
+        start_string = '🌹 Welcome To One Of A Modified Anasty Mirror Bot\n' \
+            'This bot can Mirror all your links To Google Drive!\n' \
+            '👨🏽‍💻 Powered By: @JMDKH_Team'
     await sendMessage(message, start_string)
 
 
@@ -112,104 +95,65 @@ async def restart(_, message):
         if interval:
             interval[0].cancel()
     await sync_to_async(clean_all)
-    proc1 = await create_subprocess_exec('pkill', '-9', '-f', '-e', 'gunicorn|buffet|openstack|render|zcl')
+    proc1 = await create_subprocess_exec('pkill', '-9', '-f', 'gunicorn|aria2c|qbittorrent-nox|ffmpeg|rclone')
     proc2 = await create_subprocess_exec('python3', 'update.py')
     await gather(proc1.wait(), proc2.wait())
     async with aiopen(".restartmsg", "w") as f:
         await f.write(f"{restart_message.chat.id}\n{restart_message.id}\n")
     osexecl(executable, executable, "-m", "bot")
 
+
 async def ping(_, message):
-    start_time = monotonic()
+    start_time = int(round(time() * 1000))
     reply = await sendMessage(message, "Starting Ping")
-    end_time = monotonic()
-    ping_time = int((end_time - start_time) * 1000)
-    await editMessage(reply, f'{ping_time} ms')
+    end_time = int(round(time() * 1000))
+    await editMessage(reply, f'{end_time - start_time} ms')
+
 
 async def log(_, message):
     await sendFile(message, 'log.txt')
 
 help_string = f'''
-<b>NOTE: Click on any CMD to see more detalis.</b>
-
-/{BotCommands.MirrorCommand[0]} or /{BotCommands.MirrorCommand[1]}: Upload to Cloud Drive.
-/{BotCommands.ZipMirrorCommand[0]} or /{BotCommands.ZipMirrorCommand[1]}: Upload as zip.
-/{BotCommands.UnzipMirrorCommand[0]} or /{BotCommands.UnzipMirrorCommand[1]}: Unzip before upload.
-
-<b>Use qBit commands for torrents only:</b>
-/{BotCommands.QbMirrorCommand[0]} or /{BotCommands.QbMirrorCommand[1]}: Download using qBittorrent and Upload to Cloud Drive.
-/{BotCommands.QbZipMirrorCommand[0]} or /{BotCommands.QbZipMirrorCommand[1]}: Download using qBittorrent and upload as zip.
-/{BotCommands.QbUnzipMirrorCommand[0]} or /{BotCommands.QbUnzipMirrorCommand[1]}: Download using qBittorrent and unzip before upload.
-
-/{BotCommands.BtSelectCommand}: Select files from torrents by gid or reply.
-/{BotCommands.CategorySelect}: Change upload category for Google Drive.
-
-<b>Use Yt-Dlp commands for YouTube or any videos:</b>
+NOTE: Try each command without any argument to see more detalis.
+/{BotCommands.MirrorCommand[0]} or /{BotCommands.MirrorCommand[1]}: Start mirroring to Google Drive.
+/{BotCommands.QbMirrorCommand[0]} or /{BotCommands.QbMirrorCommand[1]}: Start Mirroring to Google Drive using qBittorrent.
 /{BotCommands.YtdlCommand[0]} or /{BotCommands.YtdlCommand[1]}: Mirror yt-dlp supported link.
-/{BotCommands.YtdlZipCommand[0]} or /{BotCommands.YtdlZipCommand[1]}: Mirror yt-dlp supported link as zip.
-
-<b>Use Leech commands for upload to Telegram:</b>
-/{BotCommands.LeechCommand[0]} or /{BotCommands.LeechCommand[1]}: Upload to Telegram.
-/{BotCommands.ZipLeechCommand[0]} or /{BotCommands.ZipLeechCommand[1]}: Upload to Telegram as zip.
-/{BotCommands.UnzipLeechCommand[0]} or /{BotCommands.UnzipLeechCommand[1]}: Unzip before upload to Telegram.
-/{BotCommands.QbLeechCommand[0]} or /{BotCommands.QbLeechCommand[1]}: Download using qBittorrent and upload to Telegram(For torrents only).
-/{BotCommands.QbZipLeechCommand[0]} or /{BotCommands.QbZipLeechCommand[1]}: Download using qBittorrent and upload to Telegram as zip(For torrents only).
-/{BotCommands.QbUnzipLeechCommand[0]} or /{BotCommands.QbUnzipLeechCommand[1]}: Download using qBittorrent and unzip before upload to Telegram(For torrents only).
-/{BotCommands.YtdlLeechCommand[0]} or /{BotCommands.YtdlLeechCommand[1]}: Download using Yt-Dlp(supported link) and upload to telegram.
-/{BotCommands.YtdlZipLeechCommand[0]} or /{BotCommands.YtdlZipLeechCommand[1]}: Download using Yt-Dlp(supported link) and upload to telegram as zip.
-
-/leech{BotCommands.DeleteCommand} [telegram_link]: Delete replies from telegram (Only Owner & Sudo).
-
-<b>G-Drive commands:</b>
-/{BotCommands.CloneCommand}: Copy file/folder to Cloud Drive.
+/{BotCommands.LeechCommand[0]} or /{BotCommands.LeechCommand[1]}: Start leeching to Telegram.
+/{BotCommands.QbLeechCommand[0]} or /{BotCommands.QbLeechCommand[1]}: Start leeching using qBittorrent.
+/{BotCommands.YtdlLeechCommand[0]} or /{BotCommands.YtdlLeechCommand[1]}: Leech yt-dlp supported link.
+/{BotCommands.CloneCommand} [drive_url]: Copy file/folder to Google Drive.
 /{BotCommands.CountCommand} [drive_url]: Count file/folder of Google Drive.
 /{BotCommands.DeleteCommand} [drive_url]: Delete file/folder from Google Drive (Only Owner & Sudo).
-
-<b>Cancel Tasks:</b>
-/{BotCommands.CancelMirror[0]} or /{BotCommands.CancelMirror[1]}: Cancel task by gid or reply.
-/{BotCommands.CancelAllCommand[0]} : Cancel all tasks which added by you /{BotCommands.CancelAllCommand[1]} to in bots.
-
-<b>Torrent/Drive Search:</b>
+/leech{BotCommands.DeleteCommand} [telegram_link]: Delete replies from telegram (Only Owner & Sudo).
+/{BotCommands.UserSetCommand} [query]: Users settings.
+/{BotCommands.BotSetCommand} [query]: Bot settings.
+/{BotCommands.BtSelectCommand}: Select files from torrents by gid or reply.
+/{BotCommands.CategorySelect}: Change upload category for Google Drive.
+/{BotCommands.CancelMirror}: Cancel task by gid or reply.
+/{BotCommands.CancelAllCommand[0]} : Cancel all tasks which added by you {BotCommands.CancelAllCommand[1]} to in bots.
 /{BotCommands.ListCommand} [query]: Search in Google Drive(s).
 /{BotCommands.SearchCommand} [query]: Search for torrents with API.
-
-<b>Bot Settings:</b>
-/{BotCommands.UserSetCommand}: Open User settings.
-/{BotCommands.UsersCommand}: show users settings (Only Owner & Sudo).
-/{BotCommands.BotSetCommand}: Open Bot settings (Only Owner & Sudo).
-
-<b>Authentication:</b>
+/{BotCommands.StatusCommand[0]} or /{BotCommands.StatusCommand[1]}: Shows a status of all the downloads.
+/{BotCommands.StatsCommand}: Show stats of the machine where the bot is hosted in.
+/{BotCommands.PingCommand[0]} or /{BotCommands.PingCommand[1]}: Check how long it takes to Ping the Bot (Only Owner & Sudo).
 /{BotCommands.AuthorizeCommand}: Authorize a chat or a user to use the bot (Only Owner & Sudo).
 /{BotCommands.UnAuthorizeCommand}: Unauthorize a chat or a user to use the bot (Only Owner & Sudo).
+/{BotCommands.UsersCommand}: show users settings (Only Owner & Sudo).
 /{BotCommands.AddSudoCommand}: Add sudo user (Only Owner).
 /{BotCommands.RmSudoCommand}: Remove sudo users (Only Owner).
-
-<b>Bot Stats:</b>
-/{BotCommands.StatusCommand[0]} or /{BotCommands.StatusCommand[1]}: Shows a status of all active tasks.
-/{BotCommands.StatsCommand[0]} or /{BotCommands.StatsCommand[1]}: Show server stats.
-/{BotCommands.PingCommand[0]} or /{BotCommands.PingCommand[1]}: Check how long it takes to Ping the Bot.
-
-<b>Maintainance:</b>
 /{BotCommands.RestartCommand[0]}: Restart and update the bot (Only Owner & Sudo).
-/{BotCommands.RestartCommand[1]}: Restart and update all bots (Only Owner & Sudo).
+/{BotCommands.RestartCommand[1]}: Restart all bots and update the bot (Only Owner & Sudo)..
 /{BotCommands.LogCommand}: Get a log file of the bot. Handy for getting crash reports (Only Owner & Sudo).
-
-<b>Extras:</b>
 /{BotCommands.ShellCommand}: Run shell commands (Only Owner).
 /{BotCommands.EvalCommand}: Run Python Code Line | Lines (Only Owner).
 /{BotCommands.ExecCommand}: Run Commands In Exec (Only Owner).
 /{BotCommands.ClearLocalsCommand}: Clear {BotCommands.EvalCommand} or {BotCommands.ExecCommand} locals (Only Owner).
-
-<b>RSS Feed:</b>
-/{BotCommands.RssCommand}: Open RSS Menu.
-
-<b>Attention: Read the first line again!</b>
+/{BotCommands.RssCommand}: RSS Menu.
 '''
 
 
 async def bot_help(_, message):
-    reply_message = await sendMessage(message, help_string)
-    await auto_delete_message(message, reply_message)
+    await sendMessage(message, help_string)
 
 
 async def restart_notification():
@@ -230,14 +174,15 @@ async def restart_notification():
                                        disable_notification=True)
         except Exception as e:
             LOGGER.error(e)
+
     if DATABASE_URL:
         if INCOMPLETE_TASK_NOTIFIER and (notifier_dict := await DbManger().get_incomplete_tasks()):
             for cid, data in notifier_dict.items():
                 msg = 'Restarted Successfully!' if cid == chat_id else 'Bot Restarted!'
                 for tag, links in data.items():
-                    msg += f"\n\n👤 {tag} Do your tasks again. \n"
+                    msg += f"\n\n{tag}: "
                     for index, link in enumerate(links, start=1):
-                        msg += f" {index}: {link} \n"
+                        msg += f" <a href='{link}'>{index}</a> |"
                         if len(msg.encode()) > 4000:
                             await send_incompelete_task_message(cid, msg)
                             msg = ''
@@ -247,10 +192,9 @@ async def restart_notification():
         if STOP_DUPLICATE_TASKS:
             await DbManger().clear_download_links()
 
-
     if await aiopath.isfile(".restartmsg"):
         try:
-            await bot.edit_message_text(chat_id=chat_id, message_id=msg_id, text='Berhasil, Selamat!')
+            await bot.edit_message_text(chat_id=chat_id, message_id=msg_id, text='Restarted Successfully!')
         except:
             pass
         await aioremove(".restartmsg")
@@ -272,7 +216,7 @@ async def main():
         BotCommands.HelpCommand) & CustomFilters.authorized))
     bot.add_handler(MessageHandler(stats, filters=command(
         BotCommands.StatsCommand) & CustomFilters.authorized))
-    LOGGER.info("Selamat, Bot Anda Sudah Bisa Di Gunakan!")
+    LOGGER.info("Bot Started!")
     signal(SIGINT, exit_clean_up)
 
 bot.loop.run_until_complete(main())
