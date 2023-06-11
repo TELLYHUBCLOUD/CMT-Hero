@@ -186,7 +186,7 @@ def get_readable_message():
             msg += f"\n <b>Size:</b> {download.size()}"
 
         if config_dict['DELETE_LINKS']:
-            msg += f"\n <b>Upload:</b> <code>{download.extra_details['mode']}</code>"
+            msg += f"\n <b>Upload:</b> {download.extra_details['mode']}"
         else:
             msg += f"\n <b>Upload:</b> <a href='{download.message.link}'>{download.extra_details['mode']}</a>"
 
