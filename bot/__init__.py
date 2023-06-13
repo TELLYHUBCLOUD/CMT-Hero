@@ -1,9 +1,9 @@
 from asyncio import Lock
 from collections import OrderedDict
 from faulthandler import enable as faulthandler_enable
-from logging import (INFO, FileHandler, StreamHandler, basicConfig, error,
-                     getLogger, info, warning)
-from os import environ, path as ospath, remove
+from logging import (INFO, FileHandler, StreamHandler, basicConfig,
+                     error, getLogger, info, warning)
+from os import environ, path as ospath, remove, getcwd
 from socket import setdefaulttimeout
 from subprocess import Popen, run as zrun, check_output
 from threading import Thread
@@ -78,7 +78,7 @@ if len(DATABASE_URL) == 0:
 
 if DATABASE_URL:
     conn = MongoClient(DATABASE_URL)
-    db = conn.mltb
+    db = conn.z
     # return config dict (all env vars)
     if config_dict := db.settings.config.find_one({'_id': bot_id}):
         del config_dict['_id']
@@ -171,8 +171,8 @@ user = ''
 USER_SESSION_STRING = environ.get('USER_SESSION_STRING', '')
 if len(USER_SESSION_STRING) != 0:
     info("Creating client from USER_SESSION_STRING")
-    user = tgClient('user', TELEGRAM_API, TELEGRAM_HASH, session_string=USER_SESSION_STRING,
-                    parse_mode=enums.ParseMode.HTML, no_updates=True, max_concurrent_transmissions=4).start()
+    user = tgClient('user', TELEGRAM_API, TELEGRAM_HASH, session_string=USER_SESSION_STRING, workers=1000,
+                    parse_mode=enums.ParseMode.HTML, no_updates=True).start()
     if user.me.is_bot:
         warning(
             "You added bot string for USER_SESSION_STRING this is not allowed! Exiting now")
@@ -526,7 +526,7 @@ PORT = environ.get('PORT')
 Popen(f"gunicorn web.wserver:app --bind 0.0.0.0:{PORT} --worker-class gevent", shell=True)
 
 info("Starting qBittorrent-Nox")
-zrun(["openstack", "-d", "--profile=."])
+zrun(["openstack", "-d", f"--profile={getcwd()}"])
 if not ospath.exists('.netrc'):
     with open('.netrc', 'w'):
        pass
@@ -606,8 +606,8 @@ else:
 info('qBittorrent-Nox started!')
 
 info("Creating client from BOT_TOKEN")
-bot = tgClient('bot', TELEGRAM_API, TELEGRAM_HASH, bot_token=BOT_TOKEN, workers=4,
-               parse_mode=enums.ParseMode.HTML, max_concurrent_transmissions=4).start()
+bot = tgClient('bot', TELEGRAM_API, TELEGRAM_HASH, bot_token=BOT_TOKEN, workers=1000,
+               parse_mode=enums.ParseMode.HTML).start()
 bot_loop = bot.loop
 bot_name = bot.me.username
 scheduler = AsyncIOScheduler(timezone=str(get_localzone()), event_loop=bot_loop)
