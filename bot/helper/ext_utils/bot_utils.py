@@ -186,11 +186,11 @@ def get_readable_message():
             msg += f"\n <b>Size:</b> {download.size()}"
 
         if config_dict['DELETE_LINKS']:
-            msg += f"\n <b>Upload:</b> {download.extra_details['mode']}"
+            msg += f"\n <b>Upload:</b> <code>{download.extra_details['mode']}</code>"
         else:
-            msg += f"\n <b>Upload:</b> <a href='{download.message.link}'>{download.extra_details['mode']}</a>"
+            msg += f"\n <b>Upload:</b> <code><a href='{download.message.link}'>{download.extra_details['mode']}</a></code>"
 
-        msg += f" | <b>By:</b> {tag}"
+        msg += f" | <b>By:</b> <code>{tag}</code>"
         msg += f"\n Stop:</b> <code>/{BotCommands.CancelMirror[0]} {download.gid()}</code>"
         msg += f"\n<b>▬▬▬▬▬▬▬▬▬▬▬▬▬</b>"
         msg += "\n\n"
