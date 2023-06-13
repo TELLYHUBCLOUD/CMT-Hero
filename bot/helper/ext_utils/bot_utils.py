@@ -6,12 +6,10 @@ from functools import partial, wraps
 from html import escape
 from re import match
 from time import time
-from urllib.request import urlopen
 from uuid import uuid4
-
 from psutil import cpu_percent, disk_usage, virtual_memory
 from pyrogram.types import BotCommand
-from requests import head as rhead
+from aiohttp import ClientSession
 
 from bot import (bot_loop, bot_name, botStartTime, config_dict, download_dict,
                  download_dict_lock, extra_buttons, user_data)
@@ -106,11 +104,11 @@ def bt_selection_buttons(id_, isCanCncl=True):
 
 
 async def get_telegraph_list(telegraph_content):
-    path = [(await telegraph.create_page(title='Pea Masamba Drive Search', content=content))["path"] for content in telegraph_content]
+    path = [(await telegraph.create_page(title='Z Drive Search', content=content))["path"] for content in telegraph_content]
     if len(path) > 1:
         await telegraph.edit_telegraph(path, telegraph_content)
     buttons = ButtonMaker()
-    buttons.ubutton("🔦 VIEW", f"https://graph.org/{path[0]}", 'header')
+    buttons.ubutton("👁‍🗨 VIEW", f"https://graph.org/{path[0]}", 'header')
     buttons = extra_btns(buttons)
     return buttons.build_menu(1)
 
@@ -165,7 +163,7 @@ def get_readable_message():
             if hasattr(download, 'playList'):
                 try:
                     if playlist:=download.playList():
-                        msg += f"\n <b>Playlist Count:</b> {playlist}"
+                        msg += f"\n» <b>Playlist Count</b> » {playlist}"
                 except:
                     pass
 
@@ -222,7 +220,7 @@ def get_readable_message():
         buttons.ibutton("⫷", "status pre")
         buttons.ibutton(f"{PAGE_NO}/{PAGES}", "status ref")
         buttons.ibutton("⫸", "status nex")
-        button = buttons.build_menu(3)    
+        button = buttons.build_menu(3)
     msg += f"\n<b>🄰🄽🄰🄺 🄼🄰🅂🄰🄼🄱🄰</b>"
     msg += f"\n<b>TASKS</b>: <code>{tasks}</code>"
     msg += f" | <b>CPU</b>: <code>{cpu_percent()}%</code>"
@@ -273,8 +271,10 @@ def is_url(url):
 def is_gdrive_link(url):
     return "drive.google.com" in url
 
+
 def is_telegram_link(url):
     return url.startswith(('https://t.me/', 'tg://openmessage?user_id='))
+
 
 def is_share_link(url: str):
     if 'gdtot' in url:
@@ -295,19 +295,41 @@ def is_rclone_path(path):
 def get_mega_link_type(url):
     return "folder" if "folder" in url or "/#F!" in url else "file"
 
+def arg_parser(items, arg_base):
+    if not items:
+        return arg_base
+    t = len(items)
+    i = 0
+    while i + 1 <= t:
+        part = items[i]
+        if part in arg_base:
+            if part in ['-s', '-select', '-j', '-join']:
+                arg_base[part] = True
+            elif t == i + 1:
+                if part in ['-b', '-bulk', '-e', '-uz', '-unzip', '-z', '-zip', '-s', '-select', '-j', '-join', '-d', '-seed']:
+                    arg_base[part] = True
+            else:
+                sub_list = []
+                for j in range(i+1, t):
+                    item = items[j]
+                    if item in arg_base:
+                        if part in ['-b', '-bulk', '-e', '-uz', '-unzip', '-z', '-zip', '-s', '-select', '-j', '-join', '-d', '-seed']:
+                            arg_base[part] = True
+                        break
+                    sub_list.append(item)
+                    i += 1
+                if sub_list:
+                    arg_base[part] = " ".join(sub_list)
+        i += 1
+    if items[0] not in arg_base:
+        arg_base['link'] = items[0]
+    return arg_base
 
-def get_content_type(link):
-    try:
-        res = rhead(link, allow_redirects=True, timeout=5,
-                    headers={'user-agent': 'Wget/1.12'})
-        content_type = res.headers.get('content-type')
-    except:
-        try:
-            res = urlopen(link, timeout=5)
-            content_type = res.info().get_content_type()
-        except:
-            content_type = None
-    return content_type
+
+async def get_content_type(url):
+    async with ClientSession(trust_env=True) as session:
+        async with session.get(url) as response:
+            return response.headers.get('Content-Type')
 
 
 def update_user_ldata(id_, key, value):
@@ -338,20 +360,19 @@ def checking_access(user_id, button=None):
     user_data.setdefault(user_id, {})
     data = user_data[user_id]
     expire = data.get('time')
-    isExpired = (expire is None or expire is not None and (time() - expire) > config_dict['TOKEN_TIMEOUT'])
+    isExpired = (expire is None or expire is not None and (
+        time() - expire) > config_dict['TOKEN_TIMEOUT'])
     if isExpired:
-        token = data['token'] if expire is None and 'token' in data else str(uuid4())
+        token = data['token'] if expire is None and 'token' in data else str(
+            uuid4())
         if expire is not None:
             del data['time']
         data['token'] = token
         user_data[user_id].update(data)
         if button is None:
             button = ButtonMaker()
-        button.ubutton('Token Baru', short_url(f'https://telegram.me/{bot_name}?start={token}'))
-        button.ubutton('Pea Masamba', short_url(f'https://subscene.com/u/1271292'))
-        button.ubutton('Website', short_url(f'https://www.comelmuewa84.eu.org'))
-        button.ubutton('Mirror', short_url(f'https://t.me/peamasambamirror'))
-        return 'Token <b>Anda</b> sudah Ekspayer. Silahkan klik Token Baru, bro.\n\n2. Setelah <b>Anda</b> Klik Start di bot, Silahkan ulangi lagi Mirror-nya, bro.', button        
+        button.ubutton('Get New Token', short_url(f'https://telegram.me/{bot_name}?start={token}'))
+        return 'Your <b>Token</b> is expired. Get a new one.', button
     return None, button
 
 
@@ -395,32 +416,22 @@ def new_thread(func):
 async def set_commands(client):
     if config_dict['SET_COMMANDS']:
         await client.set_bot_commands([
-        BotCommand(f'{BotCommands.MirrorCommand[0]}', f'or /{BotCommands.MirrorCommand[1]} Mirror'),
-        BotCommand(f'{BotCommands.LeechCommand[0]}', f'or /{BotCommands.LeechCommand[1]} Leech'),
-        BotCommand(f'{BotCommands.ZipMirrorCommand[0]}', f'or /{BotCommands.ZipMirrorCommand[1]} Mirror and upload as zip'),
-        BotCommand(f'{BotCommands.ZipLeechCommand[0]}', f'or /{BotCommands.ZipLeechCommand[1]} Leech and upload as zip'),
-        BotCommand(f'{BotCommands.UnzipMirrorCommand[0]}', f'or /{BotCommands.UnzipMirrorCommand[1]} Mirror and extract files'),
-        BotCommand(f'{BotCommands.UnzipLeechCommand[0]}', f'or /{BotCommands.UnzipLeechCommand[1]} Leech and extract files'),
-        BotCommand(f'{BotCommands.QbMirrorCommand[0]}', f'or /{BotCommands.QbMirrorCommand[1]} Mirror torrent using qBittorrent'),
-        BotCommand(f'{BotCommands.QbLeechCommand[0]}', f'or /{BotCommands.QbLeechCommand[1]} Leech torrent using qBittorrent'),
-        BotCommand(f'{BotCommands.QbZipMirrorCommand[0]}', f'or /{BotCommands.QbZipMirrorCommand[1]} Mirror torrent and upload as zip using qb'),
-        BotCommand(f'{BotCommands.QbZipLeechCommand[0]}', f'or /{BotCommands.QbZipLeechCommand[1]} Leech torrent and upload as zip using qb'),
-        BotCommand(f'{BotCommands.QbUnzipMirrorCommand[0]}', f'or /{BotCommands.QbUnzipMirrorCommand[1]} Mirror torrent and extract files using qb'),
-        BotCommand(f'{BotCommands.QbUnzipLeechCommand[0]}', f'or /{BotCommands.QbUnzipLeechCommand[1]} Leech torrent and extract using qb'),
-        BotCommand(f'{BotCommands.YtdlCommand[0]}', f'or /{BotCommands.YtdlCommand[1]} Mirror yt-dlp supported link'),
-        BotCommand(f'{BotCommands.YtdlLeechCommand[0]}', f'or /{BotCommands.YtdlLeechCommand[1]} Leech through yt-dlp supported link'),
-        BotCommand(f'{BotCommands.YtdlZipCommand[0]}', f'or /{BotCommands.YtdlZipCommand[1]} Mirror yt-dlp supported link as zip'),
-        BotCommand(f'{BotCommands.YtdlZipLeechCommand[0]}', f'or /{BotCommands.YtdlZipLeechCommand[1]} Leech yt-dlp support link as zip'),
-        BotCommand(f'{BotCommands.CloneCommand}', 'Copy file/folder to Drive'),
-        BotCommand(f'{BotCommands.CountCommand}', '[drive_url]: Count file/folder of Google Drive.'),
-        BotCommand(f'{BotCommands.StatusCommand[0]}', f'or /{BotCommands.StatusCommand[1]} Get mirror status message'),
-        BotCommand(f'{BotCommands.StatsCommand[0]}', f'{BotCommands.StatsCommand[1]} Check bot stats'),
-        BotCommand(f'{BotCommands.BtSelectCommand}', 'Select files to download only torrents'),
-        BotCommand(f'{BotCommands.CategorySelect}', 'Select category to upload only mirror'),
-        BotCommand(f'{BotCommands.CancelMirror[0]}', f'or {BotCommands.CancelMirror[1]} Cancel a Task'),
-        BotCommand(f'{BotCommands.CancelAllCommand[0]}', f'Cancel all tasks which added by you or {BotCommands.CancelAllCommand[1]} to in bots.'),
-        BotCommand(f'{BotCommands.ListCommand}', 'Search in Drive'),
-        BotCommand(f'{BotCommands.SearchCommand}', 'Search in Torrent'),
-        BotCommand(f'{BotCommands.UserSetCommand}', 'Users settings'),
-        BotCommand(f'{BotCommands.HelpCommand}', 'Get detailed help'),
-            ])
+            BotCommand(f'{BotCommands.MirrorCommand[0]}', f'or /{BotCommands.MirrorCommand[1]} Mirror'),
+            BotCommand(f'{BotCommands.LeechCommand[0]}', f'or /{BotCommands.LeechCommand[1]} Leech'),
+            BotCommand(f'{BotCommands.QbMirrorCommand[0]}', f'or /{BotCommands.QbMirrorCommand[1]} Mirror torrent using qBittorrent'),
+            BotCommand(f'{BotCommands.QbLeechCommand[0]}', f'or /{BotCommands.QbLeechCommand[1]} Leech torrent using qBittorrent'),
+            BotCommand(f'{BotCommands.YtdlCommand[0]}', f'or /{BotCommands.YtdlCommand[1]} Mirror yt-dlp supported link'),
+            BotCommand(f'{BotCommands.YtdlLeechCommand[0]}', f'or /{BotCommands.YtdlLeechCommand[1]} Leech through yt-dlp supported link'),
+            BotCommand(f'{BotCommands.CloneCommand}', 'Copy file/folder to Drive'),
+            BotCommand(f'{BotCommands.CountCommand}', '[drive_url]: Count file/folder of Google Drive.'),
+            BotCommand(f'{BotCommands.StatusCommand[0]}', f'or /{BotCommands.StatusCommand[1]} Get mirror status message'),
+            BotCommand(f'{BotCommands.StatsCommand[0]}', f'{BotCommands.StatsCommand[1]} Check bot stats'),
+            BotCommand(f'{BotCommands.BtSelectCommand}', 'Select files to download only torrents'),
+            BotCommand(f'{BotCommands.CategorySelect}', 'Select category to upload only mirror'),
+            BotCommand(f'{BotCommands.CancelMirror[0]}', f'or {BotCommands.CancelMirror[1]} Cancel a Task'),
+            BotCommand(f'{BotCommands.CancelAllCommand[0]}', f'Cancel all tasks which added by you or {BotCommands.CancelAllCommand[1]} to in bots.'),
+            BotCommand(f'{BotCommands.ListCommand}', 'Search in Drive'),
+            BotCommand(f'{BotCommands.SearchCommand}', 'Search in Torrent'),
+            BotCommand(f'{BotCommands.UserSetCommand}', 'Users settings'),
+            BotCommand(f'{BotCommands.HelpCommand}', 'Get detailed help'),
+        ])
