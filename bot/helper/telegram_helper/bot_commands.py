@@ -4,22 +4,12 @@ from bot import CMD_SUFFIX
 class _BotCommands:
     def __init__(self):
         self.StartCommand = 'start'
-        self.MirrorCommand = [f'pea{CMD_SUFFIX}', f'm{CMD_SUFFIX}']
-        self.UnzipMirrorCommand = [f'peaunzip{CMD_SUFFIX}', f'uzm{CMD_SUFFIX}']
-        self.ZipMirrorCommand = [f'peazip{CMD_SUFFIX}', f'zm{CMD_SUFFIX}']
-        self.QbMirrorCommand = [f'peaqb{CMD_SUFFIX}', f'qbm{CMD_SUFFIX}']
-        self.QbUnzipMirrorCommand = [f'peaqbunzip{CMD_SUFFIX}', f'qbuzm{CMD_SUFFIX}']
-        self.QbZipMirrorCommand = [f'peaqbzip{CMD_SUFFIX}', f'qbzm{CMD_SUFFIX}']
+        self.MirrorCommand = [f'pea{CMD_SUFFIX}', f'p{CMD_SUFFIX}']
+        self.QbMirrorCommand = [f'peaqb{CMD_SUFFIX}', f'pqb{CMD_SUFFIX}']
         self.YtdlCommand = [f'peaytdl{CMD_SUFFIX}', f'yt{CMD_SUFFIX}']
-        self.YtdlZipCommand = [f'peaytdlzip{CMD_SUFFIX}', f'ytz{CMD_SUFFIX}']
         self.LeechCommand = [f'pealeech{CMD_SUFFIX}', f'l{CMD_SUFFIX}']
-        self.UnzipLeechCommand = [f'peaunzipleech{CMD_SUFFIX}', f'uzl{CMD_SUFFIX}']
-        self.ZipLeechCommand = [f'peazipleech{CMD_SUFFIX}', f'zl{CMD_SUFFIX}']
         self.QbLeechCommand = [f'peaqbleech{CMD_SUFFIX}', f'qbl{CMD_SUFFIX}']
-        self.QbUnzipLeechCommand = [f'peaqbunzipleech{CMD_SUFFIX}', f'qbuzl{CMD_SUFFIX}']
-        self.QbZipLeechCommand = [f'peaqbzipleech{CMD_SUFFIX}', f'qbzl{CMD_SUFFIX}']
         self.YtdlLeechCommand = [f'peaytdlleech{CMD_SUFFIX}', f'ytl{CMD_SUFFIX}']
-        self.YtdlZipLeechCommand = [f'peaytdlzipleech{CMD_SUFFIX}', f'ytzl{CMD_SUFFIX}']
         self.CloneCommand = f'peaclone{CMD_SUFFIX}'
         self.CountCommand = f'peacount{CMD_SUFFIX}'
         self.DeleteCommand = f'peadel{CMD_SUFFIX}'
