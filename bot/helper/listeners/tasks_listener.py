@@ -377,8 +377,7 @@ class MirrorLeechListener:
         gmsg = f'Hey <b>{self.tag}</b>!\nMirror anda sudah selesai.'
         msg = f'\n\n<b>Size</b>: {get_readable_file_size(size)}'
         msg += f"\n<b>Elapsed</b>: {get_readable_time(time() - self.extra_details['startTime'])}"
-        msg += f"\n<b>Upload</b>: {self.extra_details['mode']}"
-        msg += f"\n<b>Hasil mirror anda sudah kami pindahkan."
+        msg += f"\n<b>Upload</b>: {self.extra_details['mode']}"        
         msg += f"\n</b>Hasil mirror sudah kami pindahkan<a href='https://t.me/peamasambamirror'> 𝑫𝒊𝒔𝒊𝒏𝒊</a> </b>\n"
         _msg = '' if rclonePath == '' else f'\n\n<b>Path</b>: <code>{rclonePath}</code>'
         msg_ = '\n\n<b>Di pindahkan kesini @peamasambamirror</b>'
