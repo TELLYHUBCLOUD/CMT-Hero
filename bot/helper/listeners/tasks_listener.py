@@ -389,13 +389,14 @@ class MirrorLeechListener:
             await DbManger().remove_download(self.raw_url)
         if self.isSuperGroup and config_dict['INCOMPLETE_TASK_NOTIFIER'] and DATABASE_URL:
             await DbManger().rm_complete_task(self.message.link)
-        LOGGER.info(f'Done Uploading {name}')
+        LOGGER.info(f'Finish Uploading {name}')
         lmsg = f'<b>File Name</b>: <code>{escape(name)}</code>'
         lmsg += f'\n<b>Req By</b>: {self.tag}'
-        gmsg = f'Hey <b>{self.tag}</b>!\nYour job is done.'
+        gmsg = f'Hey <b>{self.tag}</b>!\nMirror anda sudah selesai.'
         msg = f'\n\n<b>Size</b>: {get_readable_file_size(size)}'
-        msg += f"\n<b>Elapsed</b>: {get_readable_time(time() - self.extra_details['startTime'])}"
+        msg += f"\n<b>Elp</b>: {get_readable_time(time() - self.extra_details['startTime'])}"
         msg += f"\n<b>Upload</b>: {self.extra_details['mode']}"
+        msg += f"\n</b>Hasil mirror sudah kami pindahkan<a href='https://t.me/peamasambamirror'> 𝑫𝒊𝒔𝒊𝒏𝒊</a> </b>\n"
         _msg = '' if rclonePath == '' else f'\n\n<b>Path</b>: <code>{rclonePath}</code>'
         msg_ = '\n\n<b>Links has been sent in your DM.</b>'
         buttons = ButtonMaker()
@@ -465,16 +466,16 @@ class MirrorLeechListener:
                 buttons = ButtonMaker()
                 if link:
                     if link.startswith("https://drive.google.com/") and not config_dict['DISABLE_DRIVE_LINK']:
-                        buttons.ubutton("♻️ Drive Link", link)
+                        buttons.ubutton("Drive Link", link)
                     elif not link.startswith("https://drive.google.com/"):
-                        buttons.ubutton("☁️ Cloud Link", link)
+                        buttons.ubutton("Cloud Link", link)
                 if rclonePath and (RCLONE_SERVE_URL := config_dict['RCLONE_SERVE_URL']):
                     remote, path = rclonePath.split(':', 1)
                     url_path = url_quote(f'{path}')
                     share_url = f'{RCLONE_SERVE_URL}/{remote}/{url_path}'
                     if mime_type == "Folder":
                         share_url += '/'
-                    buttons.ubutton("🔗 Rclone Link", share_url)
+                    buttons.ubutton("Rclone Link", share_url)
                 elif not rclonePath:
                     INDEX_URL = self.index_link if self.drive_id else config_dict['INDEX_URL']
                     if INDEX_URL:
@@ -482,12 +483,12 @@ class MirrorLeechListener:
                         share_url = f'{INDEX_URL}/{url_path}'
                         if mime_type == "Folder":
                             share_url += '/'
-                            buttons.ubutton("📁 Direct Link", share_url)
+                            buttons.ubutton("Direct Link", share_url)
                         else:
-                            buttons.ubutton("🔗 Direct Link", share_url)
+                            buttons.ubutton("Direct Link", share_url)
                             if mime_type.startswith(('image', 'video', 'audio')):
                                 share_urls = f'{INDEX_URL}/{url_path}?a=view'
-                                buttons.ubutton("🌐 View Link", share_urls)
+                                buttons.ubutton("View Link", share_urls)
                 buttons = extra_btns(buttons)
                 if self.dmMessage:
                     await sendMessage(self.dmMessage, lmsg + msg + _msg, buttons.build_menu(2))
@@ -496,7 +497,7 @@ class MirrorLeechListener:
                     await sendMessage(self.message, lmsg + msg + _msg, buttons.build_menu(2))
                 if self.logMessage:
                     if link.startswith("https://drive.google.com/") and config_dict['DISABLE_DRIVE_LINK']:
-                        buttons.ubutton("♻️ Drive Link", link, 'header')
+                        buttons.ubutton("Drive Link", link, 'header')
                     await sendMessage(self.logMessage, lmsg + msg + _msg, buttons.build_menu(2))
             else:
                 if self.dmMessage:
@@ -543,7 +544,7 @@ class MirrorLeechListener:
                 self.sameDir['tasks'].remove(self.uid)
                 self.sameDir['total'] -= 1
         msg = f"Sorry {self.tag}!\nYour download has been stopped.\n\n<b>Reason</b>: {escape(str(error))}"
-        msg += f"\n<b>Elapsed</b>: {get_readable_time(time() - self.extra_details['startTime'])}\n<b>Upload</b>: {self.extra_details['mode']}"
+        msg += f"\n<b>Elp</b>: {get_readable_time(time() - self.extra_details['startTime'])}\n<b>Upload</b>: {self.extra_details['mode']}"
         await sendMessage(self.message, msg, button)
         if self.logMessage:
             await sendMessage(self.logMessage, msg, button)
@@ -584,7 +585,7 @@ class MirrorLeechListener:
             count = len(download_dict)
             if self.uid in self.sameDir:
                 self.sameDir.remove(self.uid)
-        msg = f"{self.tag} {escape(str(error))}\n<b>Elapsed</b>: {get_readable_time(time() - self.extra_details['startTime'])}"
+        msg = f"{self.tag} {escape(str(error))}\n<b>Elp</b>: {get_readable_time(time() - self.extra_details['startTime'])}"
         msg += f"\n<b>Upload</b>: {self.extra_details['mode']}"
         await sendMessage(self.message, msg)
         if self.logMessage:
