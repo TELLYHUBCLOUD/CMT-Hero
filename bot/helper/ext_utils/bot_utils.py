@@ -372,7 +372,7 @@ def checking_access(user_id, button=None):
         if button is None:
             button = ButtonMaker()
         button.ubutton('Ambil Token Baru Dulu', short_url(f'https://telegram.me/{bot_name}?start={token}'))
-        return '<b>Token</b> kamu belum ada. Klik Start di bot untuk memulainya.\n\n 2. Lalu mirror ulang kembali, okay.', button
+        return '<b>Token</b> kamu belum ada. Klik Start di bot untuk memulainya.\n\n 2. Lalu mirror ulang kembali, okay.\n\n<b>PEA MASAMBA</b>', button
     return None, button
 
 
