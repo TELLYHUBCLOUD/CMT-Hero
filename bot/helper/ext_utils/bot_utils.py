@@ -368,25 +368,13 @@ def checking_access(user_id, button=None):
         if expire is not None:
             del data['time']
         data['token'] = token
-        user_data[user_id].update(data)
-        time_str = format_validity_time(token_timeout)
+        user_data[user_id].update(data)        
         if button is None:
             button = ButtonMaker()
         button.ubutton('Ambil Token Baru Dulu', short_url(f'https://telegram.me/{bot_name}?start={token}'))
-        return '<b>Token</b> kamu belum ada. Klik Start di bot untuk memulainya.\n\n<b>It will expire after {time_str}</b>', button
+        return '<b>Token</b> kamu belum ada. Klik Start di bot untuk memulainya.\n\n <b>2:</b> Lalu mirror ulang kembali, okay.\n\n<b>PEA MASAMBA</b>', button
     return None, button
- 
-def format_validity_time(seconds):
-    if seconds is None:
-        return "Invalid input: seconds cannot be None"
-    periods = [('cosmic year', 31557600000000000), ('galactic year', 225000000000000000), ('aeon', 31536000000000000), ('epoch', 315360000000), ('millennium', 31536000000), ('century', 3153600000), ('decade', 315360000), ('year', 31536000), ('month', 2592000), ('week', 604800), ('day', 86400), ('hour', 3600), ('minute', 60), ('second', 1)]
-    result = ''
-    for period_name, period_seconds in periods:
-        if seconds >= period_seconds:
-            period_value, seconds = divmod(seconds, period_seconds)
-            plural_suffix = 's' if period_value > 1 else ''
-            result += f'{int(period_value)} {period_name}{plural_suffix} '
-    return result
+
 
 async def cmd_exec(cmd, shell=False):
     if shell:
