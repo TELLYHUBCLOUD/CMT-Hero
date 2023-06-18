@@ -369,6 +369,7 @@ def checking_access(user_id, button=None):
             del data['time']
         data['token'] = token
         user_data[user_id].update(data)
+        time_str = format_validity_time(token_timeout)
         if button is None:
             button = ButtonMaker()
         button.ubutton('Ambil Token Baru Dulu', short_url(f'https://telegram.me/{bot_name}?start={token}'))
