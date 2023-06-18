@@ -32,7 +32,7 @@ PAGE_NO = 1
 
 class MirrorStatus:
     STATUS_UPLOADING = "🆄🄿🅻🄾🄰🅳"
-    STATUS_DOWNLOADING = "🄳🄾🆆🅽🄳🅻🄾🄰🅳"
+    STATUS_DOWNLOADING = "🄳🄾🆆🅽🅻🄾🄰🅳"
     STATUS_CLONING = "🅒🅛🅞🅝🅔"
     STATUS_QUEUEDL = "🅠🅤🅔🅤🅔 🅓🅝"
     STATUS_QUEUEUP = "🅠🅤🅔🅤🅔 🅤🅟"
