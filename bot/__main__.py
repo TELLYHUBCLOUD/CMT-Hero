@@ -119,8 +119,7 @@ async def start(_, message):
             return await sendMessage(message, 'Token already used!\n\nKindly generate a new one.')
         data['token'] = str(uuid4())
         data['time'] = time()
-        user_data[userid].update(data)
-        time_str = format_validity_time(token_timeout)
+        user_data[userid].update(data)        
         msg = 'Token refreshed successfully!\n\n'
         msg += f'Validity: {get_readable_time(int(config_dict["TOKEN_TIMEOUT"]))}'
         return await sendMessage(message, msg)
