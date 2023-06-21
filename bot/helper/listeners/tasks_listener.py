@@ -397,7 +397,7 @@ class MirrorLeechListener:
         lmsg += f'\n<b>Req By</b>: <i>{self.tag}</i>'
         gmsg = f'Hey <b>{self.tag}</b>!\nYour job is done.'
         msg = f'\n\n<b>Size</b>: <i>{get_readable_file_size(size)}</i>'
-        msg += f"\n<b>Elp/b>: <i>{get_readable_time(time() - self.extra_details['startTime'])}</i>"
+        msg += f"\n<b>Elp</b>: <i>{get_readable_time(time() - self.extra_details['startTime'])}</i>"
         msg += f"\n<b>Upload</b>: <i>{self.extra_details['mode']}</i>"
         _msg = '' if rclonePath == '' else f'\n\n<b>Path</b>: <code>{rclonePath}</code>'
         msg += f"\n</b>Hasil mirror sudah kami pindahkan<a href='https://t.me/peamasambamirror'> 𝑫𝒊𝒔𝒊𝒏𝒊</a> </b>\n"
