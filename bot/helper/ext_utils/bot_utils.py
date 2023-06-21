@@ -42,7 +42,6 @@ class MirrorStatus:
     STATUS_SPLITTING = "🅢🅟🅛🅘🅣"
     STATUS_CHECKING = "🅒🅗🅔🅒🅚🅤🅟"
     STATUS_SEEDING = "🅢🅔🅔🅓"
-    STATUS_CONVERTING = "🅒🅞🅝🅥🅔🅡🅣"
 
 class setInterval:
     def __init__(self, interval, action):
@@ -104,7 +103,7 @@ def bt_selection_buttons(id_, isCanCncl=True):
 
 
 async def get_telegraph_list(telegraph_content):
-    path = [(await telegraph.create_page(title='Pea Masamba Drive Search', content=content))["path"] for content in telegraph_content]
+    path = [(await telegraph.create_page(title='Z Drive Search', content=content))["path"] for content in telegraph_content]
     if len(path) > 1:
         await telegraph.edit_telegraph(path, telegraph_content)
     buttons = ButtonMaker()
@@ -149,9 +148,8 @@ def get_readable_message():
         msg += f"\n<b> <i>{escape(f'{download.name()}')}</i>\n\n" if elapsed <= config_dict['AUTO_DELETE_MESSAGE_DURATION'] else ""
         msg += f" <b>{download.status()}</b>"
 
-        if download.status() not in [MirrorStatus.STATUS_SEEDING, MirrorStatus.STATUS_CONVERTING,
-                                     MirrorStatus.STATUS_QUEUEDL, MirrorStatus.STATUS_QUEUEUP, 
-                                     MirrorStatus.STATUS_PAUSED]:
+        if download.status() not in [MirrorStatus.STATUS_SEEDING, MirrorStatus.STATUS_PAUSED,
+                                     MirrorStatus.STATUS_QUEUEDL, MirrorStatus.STATUS_QUEUEUP]:
 
             msg += f"\n\n {get_progress_bar_string(download.progress())} » {download.progress()}"
             msg += f"\n <b>Speed:</b> <code>{download.speed()}</code>"            
@@ -163,7 +161,7 @@ def get_readable_message():
             if hasattr(download, 'playList'):
                 try:
                     if playlist:=download.playList():
-                        msg += f"\n» <b>Playlist Count</b> » {playlist}"
+                        msg += f"\n <b>Playlist Count:</b>  {playlist}"
                 except:
                     pass
 
@@ -181,7 +179,7 @@ def get_readable_message():
             msg += f"\n <b>Ratio:</b> {download.ratio()}"
             msg += f" | <b>Time:</b> {download.seeding_time()}"
         else:
-            msg += f"\n» <b>Size</b> » {download.size()}"
+            msg += f"\n <b>Size:</b>  {download.size()}"
 
         if config_dict['DELETE_LINKS']:
             msg += f"\n <b>Upload:</b> <code>{download.extra_details['mode']}</code>"
@@ -229,9 +227,9 @@ def get_readable_message():
     msg += f"\n<b>DL</b>: <code>{get_readable_file_size(dl_speed)}/s</code> ▼"
     msg += f" | <b>UL</b>: <code>{get_readable_file_size(up_speed)}/s</code> ▲"
     remaining_time = 86400 - (time() - botStartTime)
-    res_time = '⚠️ ANYTIME ⚠️' if remaining_time <= 0 else get_readable_time(remaining_time)
+    res_time = '⚠️ KAPAN SAJA ⚠️' if remaining_time <= 0 else get_readable_time(remaining_time)
     if remaining_time <= 3600:
-        msg += f"\n<b>Bot Restarts In:</b> <code>{res_time}</code>"
+        msg += f"\n<b>Bot akan Restart dalam:</b> <code>{res_time}</code>"
     return msg, button
 
 
@@ -303,17 +301,34 @@ def arg_parser(items, arg_base):
     while i + 1 <= t:
         part = items[i]
         if part in arg_base:
-            if part in ['-s', '-select', '-j', '-join']:
+            if part in [
+                        '-s', '-select', 
+                        '-j', '-join'
+                    ]:
                 arg_base[part] = True
             elif t == i + 1:
-                if part in ['-b', '-bulk', '-e', '-uz', '-unzip', '-z', '-zip', '-s', '-select', '-j', '-join', '-d', '-seed']:
+                if part in [
+                            '-b', '-bulk', 
+                            '-e', '-uz', '-unzip', 
+                            '-z', '-zip', 
+                            '-s', '-select', 
+                            '-j', '-join', 
+                            '-d', '-seed'
+                        ]:
                     arg_base[part] = True
             else:
                 sub_list = []
                 for j in range(i+1, t):
                     item = items[j]
                     if item in arg_base:
-                        if part in ['-b', '-bulk', '-e', '-uz', '-unzip', '-z', '-zip', '-s', '-select', '-j', '-join', '-d', '-seed']:
+                        if part in [
+                                    '-b', '-bulk', 
+                                    '-e', '-uz', '-unzip', 
+                                    '-z', '-zip', 
+                                    '-s', '-select', 
+                                    '-j', '-join', 
+                                    '-d', '-seed'
+                                ]:
                             arg_base[part] = True
                         break
                     sub_list.append(item)
@@ -327,9 +342,12 @@ def arg_parser(items, arg_base):
 
 
 async def get_content_type(url):
-    async with ClientSession(trust_env=True) as session:
-        async with session.get(url) as response:
-            return response.headers.get('Content-Type')
+    try:
+        async with ClientSession(trust_env=True) as session:
+            async with session.get(url, verify_ssl=False) as response:
+                return response.headers.get('Content-Type')
+    except:
+        return None
 
 
 def update_user_ldata(id_, key, value):
@@ -348,9 +366,11 @@ def extra_btns(buttons):
 
 
 async def check_user_tasks(user_id, maxtask):
-    downloading_tasks = await getAllDownload(MirrorStatus.STATUS_DOWNLOADING, user_id)
-    uploading_tasks = await getAllDownload(MirrorStatus.STATUS_UPLOADING, user_id)
-    total_tasks = downloading_tasks + uploading_tasks
+    downloading_tasks   = await getAllDownload(MirrorStatus.STATUS_DOWNLOADING, user_id)
+    uploading_tasks     = await getAllDownload(MirrorStatus.STATUS_UPLOADING, user_id)
+    queuedl_tasks       = await getAllDownload(MirrorStatus.STATUS_QUEUEDL, user_id)
+    queueup_tasks       = await getAllDownload(MirrorStatus.STATUS_QUEUEUP, user_id)
+    total_tasks         = downloading_tasks + uploading_tasks + queuedl_tasks + queueup_tasks
     return len(total_tasks) >= maxtask
 
 
@@ -368,7 +388,7 @@ def checking_access(user_id, button=None):
         if expire is not None:
             del data['time']
         data['token'] = token
-        user_data[user_id].update(data)        
+        user_data[user_id].update(data)
         if button is None:
             button = ButtonMaker()
         button.ubutton('Ambil Token Baru Dulu', short_url(f'https://telegram.me/{bot_name}?start={token}'))
@@ -428,7 +448,7 @@ async def set_commands(client):
             BotCommand(f'{BotCommands.StatsCommand[0]}', f'{BotCommands.StatsCommand[1]} Check bot stats'),
             BotCommand(f'{BotCommands.BtSelectCommand}', 'Select files to download only torrents'),
             BotCommand(f'{BotCommands.CategorySelect}', 'Select category to upload only mirror'),
-            BotCommand(f'{BotCommands.CancelMirror[0]}', f'or {BotCommands.CancelMirror[1]} Cancel a Task'),
+            BotCommand(f'{BotCommands.CancelMirror}', 'Cancel a Task'),
             BotCommand(f'{BotCommands.CancelAllCommand[0]}', f'Cancel all tasks which added by you or {BotCommands.CancelAllCommand[1]} to in bots.'),
             BotCommand(f'{BotCommands.ListCommand}', 'Search in Drive'),
             BotCommand(f'{BotCommands.SearchCommand}', 'Search in Torrent'),
