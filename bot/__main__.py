@@ -71,7 +71,7 @@ async def stats(_, message):
     UMT = 'Unlimited' if config_dict['USER_MAX_TASKS'] == '' else config_dict['USER_MAX_TASKS']
     BMT = 'Unlimited' if config_dict['QUEUE_ALL'] == '' else config_dict['QUEUE_ALL']
 
-    stats = f'<b><i><u>Zee Bot Statistics</u></i></b>\n\n'\
+    stats = f'<b><i><u>Bot Statistics</u></i></b>\n\n'\
             f'<b><i><u>Repo Info</u></i></b>\n' \
             f'<b>Updated:</b> <code>{last_commit}</code>\n' \
             f'<b>Version:</b> <code>{version}</code>\n' \
@@ -119,18 +119,18 @@ async def start(_, message):
             return await sendMessage(message, 'Token already used!\n\nKindly generate a new one.')
         data['token'] = str(uuid4())
         data['time'] = time()
-        user_data[userid].update(data)        
-        msg = 'Token refreshed successfully!\n\n'
+        user_data[userid].update(data)
+        msg = 'Token berhasil diperbarui!\n\n'
         msg += f'Validity: {get_readable_time(int(config_dict["TOKEN_TIMEOUT"]))}'
         return await sendMessage(message, msg)
     elif config_dict['DM_MODE']:
         start_string = 'Bot Started.\n' \
-                       'Now I can send your stuff here.\n' \
-                       'Use me here: @Z_Mirror'
+                       'Sekarang kau bisa menggunakannya.\n' \
+                       'Gabung yuk: @peamasamba'
     else:
-        start_string = 'Sorry, you cant use me here!\n' \
-                       'Join @Z_Mirror to use me.\n' \
-                       'Thank You'
+        start_string = 'Maaf ya, kau tak bisa gunakan ini disini!\n' \
+                       'Gabung yuk: @peamasamba.\n' \
+                       'Terima kasih'
     await sendMessage(message, start_string)
 
 
@@ -187,7 +187,7 @@ help_string = f'''
 /{BotCommands.DeleteCommand} [drive_url]: Delete file/folder from Google Drive (Only Owner & Sudo).
 
 <b>Cancel Tasks:</b>
-/{BotCommands.CancelMirror[0]} or /{BotCommands.CancelMirror[1]}: Cancel task by gid or reply.
+/{BotCommands.CancelMirror}: Cancel task by gid or reply.
 /{BotCommands.CancelAllCommand[0]} : Cancel all tasks which added by you /{BotCommands.CancelAllCommand[1]} to in bots.
 
 <b>Torrent/Drive Search:</b>
@@ -293,7 +293,7 @@ async def main():
         BotCommands.HelpCommand) & CustomFilters.authorized))
     bot.add_handler(MessageHandler(stats, filters=command(
         BotCommands.StatsCommand) & CustomFilters.authorized))
-    LOGGER.info("Congratulations, Bot Started Successfully!")
+    LOGGER.info("Selamat, Bot Anda Sukses!")
     signal(SIGINT, exit_clean_up)
 
 bot.loop.run_until_complete(main())
