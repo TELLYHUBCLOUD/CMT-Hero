@@ -4,8 +4,8 @@ from bot import CMD_SUFFIX
 class _BotCommands:
     def __init__(self):
         self.StartCommand = 'start'
-        self.MirrorCommand = [f'pea{CMD_SUFFIX}', f'm{CMD_SUFFIX}']
-        self.QbMirrorCommand = [f'peaqb{CMD_SUFFIX}', f'qbm{CMD_SUFFIX}']
+        self.MirrorCommand = [f'pea{CMD_SUFFIX}', f'p{CMD_SUFFIX}']
+        self.QbMirrorCommand = [f'peaqb{CMD_SUFFIX}', f'pq{CMD_SUFFIX}']
         self.YtdlCommand = [f'peaytdl{CMD_SUFFIX}', f'yt{CMD_SUFFIX}']
         self.LeechCommand = [f'pealeech{CMD_SUFFIX}', f'l{CMD_SUFFIX}']
         self.QbLeechCommand = [f'peaqbleech{CMD_SUFFIX}', f'qbl{CMD_SUFFIX}']
@@ -13,7 +13,7 @@ class _BotCommands:
         self.CloneCommand = f'peaclone{CMD_SUFFIX}'
         self.CountCommand = f'peacount{CMD_SUFFIX}'
         self.DeleteCommand = f'peadel{CMD_SUFFIX}'
-        self.CancelMirror = [f'peastop{CMD_SUFFIX}', f'cancel{CMD_SUFFIX}']
+        self.CancelMirror = f'peastop{CMD_SUFFIX}'
         self.CancelAllCommand = [f'peacancelall{CMD_SUFFIX}', 'cancelallbot']
         self.ListCommand = f'pealist{CMD_SUFFIX}'
         self.SearchCommand = f'peasearch{CMD_SUFFIX}'
