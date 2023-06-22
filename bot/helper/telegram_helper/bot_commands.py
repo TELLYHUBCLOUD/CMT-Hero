@@ -13,7 +13,7 @@ class _BotCommands:
         self.CloneCommand = f'peaclone{CMD_SUFFIX}'
         self.CountCommand = f'peacount{CMD_SUFFIX}'
         self.DeleteCommand = f'peadel{CMD_SUFFIX}'
-        self.CancelMirror = f'abort_2{CMD_SUFFIX}'
+        self.CancelMirror = f'c{CMD_SUFFIX}'
         self.CancelAllCommand = [f'peacancelall{CMD_SUFFIX}', 'cancelallbot']
         self.ListCommand = f'pealist{CMD_SUFFIX}'
         self.SearchCommand = f'peasearch{CMD_SUFFIX}'
