@@ -227,7 +227,7 @@ def get_readable_message():
     msg += f"\n<b>⧩</b>: <code>{get_readable_file_size(dl_speed)}/s</code>"
     msg += f" | <b>◭</b>: <code>{get_readable_file_size(up_speed)}/s</code>"
     remaining_time = 86400 - (time() - botStartTime)
-    res_time = '⚠️ KAPAN SAJA ⚠️' if remaining_time <= 0 else get_readable_time(remaining_time)
+    res_time = '🚸 KAPAN SAJA 🚸' if remaining_time <= 0 else get_readable_time(remaining_time)
     if remaining_time <= 3600:
         msg += f"\n<b>Bot akan Restart dalam:</b> <code>{res_time}</code>"
     return msg, button
