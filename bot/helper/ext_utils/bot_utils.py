@@ -215,9 +215,9 @@ def get_readable_message():
 
     if tasks > STATUS_LIMIT:
         buttons = ButtonMaker()
-        buttons.ibutton("⏪", "status pre")
+        buttons.ibutton("🞀", "status pre")
         buttons.ibutton(f"{PAGE_NO}/{PAGES}", "status ref")
-        buttons.ibutton("⏩", "status nex")
+        buttons.ibutton("🞂", "status nex")
         button = buttons.build_menu(3)
     msg += f"\n<b>🄰🄽🄰🄺 🄼🄰🅂🄰🄼🄱🄰</b>"
     msg += f"\n<b>🖆</b>: <code>{tasks}</code>"
