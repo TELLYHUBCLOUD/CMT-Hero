@@ -117,17 +117,17 @@ def get_progress_bar_string(pct):
     p = min(max(pct, 0), 100)
     cFull = int(p / 10)
     cIncomplete = int(round((p / 10 - cFull) * 4))
-    p_str = '●' * cFull
+    p_str = '■' * cFull
     if cIncomplete > 0:
-        s = '◔◑◕●'
+        s = '▤▥▦▧▨▩■'
         incomplete_char = s[cIncomplete - 1]
         p_str += incomplete_char
-    p_str += '○' * (10 - len(p_str))
+    p_str += '□' * (10 - len(p_str))
     return p_str
 
 
 def get_readable_message():
-    msg = "<b>Mirror Bot Pea Masamba</b>\n\n"
+    msg = "<b>𝐁𝐎𝐓 𝐌𝐈𝐑𝐑𝐎𝐑</b>\n\n"
     button = None
     STATUS_LIMIT = config_dict['STATUS_LIMIT']
     tasks = len(download_dict)
