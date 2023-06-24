@@ -7,7 +7,7 @@ from html import escape
 from re import match
 from time import time
 from uuid import uuid4
-from psutil import cpu_percent, disk_usage, virtual_memory
+from psutil import disk_usage
 from pyrogram.types import BotCommand
 from aiohttp import ClientSession
 
@@ -151,7 +151,7 @@ def get_readable_message():
         if download.status() not in [MirrorStatus.STATUS_SEEDING, MirrorStatus.STATUS_PAUSED,
                                      MirrorStatus.STATUS_QUEUEDL, MirrorStatus.STATUS_QUEUEUP]:
 
-            msg += f"\n\n {get_progress_bar_string(download.progress())} » {download.progress()}"
+            sg += f"\n\n {get_progress_bar_string(download.progress())} » {download.progress()}"
             msg += f"\n <b>Speed:</b> <code>{download.speed()}</code>"            
             msg += f"\n <b>Done:</b> <code>{download.processed_bytes()}</code> of <code>{download.size()}</code>"
             msg += f"\n <b>ETA:</b> <code>{download.eta()}</code> | "
