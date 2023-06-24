@@ -10,8 +10,7 @@ from pyrogram.types import ChatPermissions
 from bot import (LOGGER, Interval, bot, bot_name, cached_dict, categories_dict,
                  config_dict, download_dict_lock, status_reply_dict,
                  status_reply_dict_lock, user)
-from bot.helper.ext_utils.bot_utils import (get_readable_message, setInterval,
-                                            get_readable_file_size, sync_to_async)
+from bot.helper.ext_utils.bot_utils import get_readable_message, setInterval, sync_to_async
 from bot.helper.telegram_helper.button_build import ButtonMaker
 from bot.helper.ext_utils.exceptions import TgLinkException
 
@@ -235,9 +234,9 @@ async def sendLogMessage(message, link, tag):
                 return await reply_to.copy(log_chat, caption=caption)
         msg = ''
         if isSuperGroup:
-            msg+=f'\n\n<b><a href="{message.link}">Source Link</a></b>: '
-        msg += f'<code>{link}</code>\n\n<b>Added by</b>: {tag}\n'
-        msg += f'<b>User ID</b>: <code>{message.from_user.id}</code>'
+            msg+=f'\n\n<b><a href="{message.link}">Source Link:</a></b> '
+        msg += f'<code>{link}</code>\n\n<b>Added by:</b> {tag}\n'
+        msg += f'<b>User ID:</b> <code>{message.from_user.id}</code>'
         return await message._client.send_message(log_chat, msg, disable_web_page_preview=True)
     except FloodWait as r:
         LOGGER.warning(str(r))
