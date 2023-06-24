@@ -127,7 +127,7 @@ def get_progress_bar_string(pct):
 
 
 def get_readable_message():
-    msg = ""
+    msg = "<b>𝐁𝐎𝐓 𝐌𝐈𝐑𝐑𝐎𝐑</b>\n\n"
     button = None
     STATUS_LIMIT = config_dict['STATUS_LIMIT']
     tasks = len(download_dict)
@@ -215,20 +215,20 @@ def get_readable_message():
 
     if tasks > STATUS_LIMIT:
         buttons = ButtonMaker()
-        buttons.ibutton("⫷", "status pre")
+        buttons.ibutton("🞀", "status pre")
         buttons.ibutton(f"{PAGE_NO}/{PAGES}", "status ref")
-        buttons.ibutton("⫸", "status nex")
+        buttons.ibutton("🞂", "status nex")
         button = buttons.build_menu(3)
-    msg += f"\n<b>🅿🅴🅰 🅼🅰🆂🅰🅼🅱🅰</b>"
+    msg += f"\n<b>🅿🅴🅰  🅼🅰🆂🅰🅼🅱🅰</b>"
     msg += f"\n<b>Active</b>: <code>{tasks}</code>"
     msg += f" | <b>UPTM</b>: <code>{get_readable_time(time() - botStartTime)}</code>"
     msg += f"\n<b>Disk</b>: <code>{get_readable_file_size(disk_usage(config_dict['DOWNLOAD_DIR']).free)}</code>"   
     msg += f"\n<b>⧩</b>: <code>{get_readable_file_size(dl_speed)}/s</code>"
     msg += f" | <b>◭</b>: <code>{get_readable_file_size(up_speed)}/s</code>"
     remaining_time = 86400 - (time() - botStartTime)
-    res_time = '⚠️ ANYTIME ⚠️' if remaining_time <= 0 else get_readable_time(remaining_time)
+    res_time = '🚸 KAPAN SAJA 🚸' if remaining_time <= 0 else get_readable_time(remaining_time)
     if remaining_time <= 3600:
-        msg += f"\n<b>Bot Restarts In:</b> <code>{res_time}</code>"
+        msg += f"\n<b>Bot akan Restart dalam:</b> <code>{res_time}</code>"
     return msg, button
 
 
@@ -390,8 +390,8 @@ def checking_access(user_id, button=None):
         user_data[user_id].update(data)
         if button is None:
             button = ButtonMaker()
-        button.ubutton('Get New Token', short_url(f'https://telegram.me/{bot_name}?start={token}'))
-        return 'Your <b>Token</b> is expired. Get a new one.', button
+        button.ubutton('Ambil Token Baru Dulu', short_url(f'https://telegram.me/{bot_name}?start={token}'))
+        return '<b>Token</b> kamu belum ada. Klik Start di bot untuk memulainya.\n\n <b>2:</b> Lalu mirror ulang kembali, okay.\n\n<b>PEA MASAMBA</b>', button
     return None, button
 
 
