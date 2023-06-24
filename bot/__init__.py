@@ -27,7 +27,7 @@ setdefaulttimeout(600)
 botStartTime = time()
 
 basicConfig(format='%(levelname)s | From %(name)s -> %(module)s line no: %(lineno)d | %(message)s',
-                    handlers=[FileHandler('logs.txt'), StreamHandler()], level=INFO)
+                    handlers=[FileHandler('Z_Logs.txt'), StreamHandler()], level=INFO)
 
 LOGGER = getLogger(__name__)
 
@@ -203,6 +203,10 @@ if len(SEARCH_API_LINK) == 0:
 LEECH_FILENAME_PREFIX = environ.get('LEECH_FILENAME_PREFIX', '')
 if len(LEECH_FILENAME_PREFIX) == 0:
     LEECH_FILENAME_PREFIX = ''
+
+LEECH_REMOVE_UNWANTED = environ.get('LEECH_REMOVE_UNWANTED', '')
+if len(LEECH_REMOVE_UNWANTED) == 0:
+    LEECH_REMOVE_UNWANTED = ''
 
 SEARCH_PLUGINS = environ.get('SEARCH_PLUGINS', '')
 if len(SEARCH_PLUGINS) == 0:
@@ -411,6 +415,7 @@ config_dict = {
     "INDEX_URL": INDEX_URL,
     "IS_TEAM_DRIVE": IS_TEAM_DRIVE,
     "LEECH_FILENAME_PREFIX": LEECH_FILENAME_PREFIX,
+    "LEECH_REMOVE_UNWANTED": LEECH_REMOVE_UNWANTED,
     "LEECH_SPLIT_SIZE": LEECH_SPLIT_SIZE,
     "MEDIA_GROUP": MEDIA_GROUP,
     "MEGA_EMAIL": MEGA_EMAIL,
