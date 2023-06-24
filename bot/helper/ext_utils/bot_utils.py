@@ -31,17 +31,17 @@ PAGES = 1
 PAGE_NO = 1
 
 class MirrorStatus:
-    STATUS_UPLOADING = "Uploading"
-    STATUS_DOWNLOADING = "Downloading"
-    STATUS_CLONING = "Cloning"
-    STATUS_QUEUEDL = "Queued Download"
-    STATUS_QUEUEUP = "Queued Upload"
-    STATUS_PAUSED = "Paused"
-    STATUS_ARCHIVING = "Archiving"
-    STATUS_EXTRACTING = "Extracting"
-    STATUS_SPLITTING = "Spliting"
-    STATUS_CHECKING = "CheckingUp"
-    STATUS_SEEDING = "Seeding"
+    STATUS_UPLOADING = "🆄🄿🅻🄾🄰🅳"
+    STATUS_DOWNLOADING = "🄳🄾🆆🅽🅻🄾🄰🅳"
+    STATUS_CLONING = "🅒🅛🅞🅝🅔"
+    STATUS_QUEUEDL = "🅠🅤🅔🅤🅔 🅓🅝"
+    STATUS_QUEUEUP = "🅠🅤🅔🅤🅔 🅤🅟"
+    STATUS_PAUSED = "🅟🅐🅤🅢🅔"
+    STATUS_ARCHIVING = "🅐🅡🅒🅗🅘🅥🅔"
+    STATUS_EXTRACTING = "🅴🅇🅃🆁🄰🄲🆃"
+    STATUS_SPLITTING = "🅢🅟🅛🅘🅣"
+    STATUS_CHECKING = "🅒🅗🅔🅒🅚🅤🅟"
+    STATUS_SEEDING = "🅢🅔🅔🅓"
 
 class setInterval:
     def __init__(self, interval, action):
