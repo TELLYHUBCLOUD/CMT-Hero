@@ -221,7 +221,7 @@ def get_readable_message():
         button = buttons.build_menu(3)
     msg += f"\n<b>🅿🅴🅰 🅼🅰🆂🅰🅼🅱🅰</b>"
     msg += f"\n<b>Active</b>: <code>{tasks}</code>"
-    msg += f" | <b>CPU</b>: <code>{cpu_percent()}%</code>"
+    msg += f" | <b>UPTM</b>: <code>{get_readable_time(time() - botStartTime)}</code>"
     msg += f"\n<b>Disk</b>: <code>{get_readable_file_size(disk_usage(config_dict['DOWNLOAD_DIR']).free)}</code>"
     msg += f" | <b>RAM</b>: <code>{virtual_memory().percent}%</code>"
     msg += f"\n<b>⧩</b>: <code>{get_readable_file_size(dl_speed)}/s</code>"
