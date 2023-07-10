@@ -107,7 +107,7 @@ async def get_tg_link_content(link):
     message = None
     if link.startswith('https://t.me/'):
         private = False
-        msg = re_match(r"https:\/\/t\.me\/(?:c\/)?([^\/]+)\/([0-9]+)", link)
+        msg = re_match(r"https:\/\/t\.me\/(?:c\/)?([^\/]+)(?:\/[^\/]+)?\/([0-9]+)", link)
     else:
         private = True
         msg = re_match(
@@ -230,7 +230,7 @@ async def sendLogMessage(message, link, tag):
                 caption = ''
                 if isSuperGroup:
                     caption+=f'<b><a href="{message.link}">Source</a></b> | '
-                caption+=f'<b>Added by</b>: {tag}\n<b>User ID</b>: <code>{message.from_user.id}</code>'
+                caption+=f'<b>Added by</b>: {tag}\n<b>User ID</b>: <code>{message.from_user.id}</code>'                 
                 return await reply_to.copy(log_chat, caption=caption)
         msg = ''
         if isSuperGroup:
