@@ -33,7 +33,8 @@ from bot.helper.mirror_utils.status_utils.zip_status import ZipStatus
 from bot.helper.mirror_utils.upload_utils.gdriveTools import GoogleDriveHelper
 from bot.helper.mirror_utils.upload_utils.pyrogramEngine import TgUploader
 from bot.helper.telegram_helper.button_build import ButtonMaker
-from bot.helper.telegram_helper.message_utils import (delete_all_messages,
+from bot.helper.telegram_helper.message_utils import (auto_delete_message,
+                                                      delete_all_messages,
                                                       delete_links,
                                                       send_to_chat,
                                                       sendMessage,
@@ -58,10 +59,8 @@ class MirrorLeechListener:
         self.newDir = ""
         self.dir = f"{DOWNLOAD_DIR}{self.uid}"
         self.select = select
-        self.isSuperGroup = self.message.chat.type in [
-            self.message.chat.type.SUPERGROUP, 
-            self.message.chat.type.CHANNEL
-        ]
+        self.isSuperGroup = self.message.chat.type in [self.message.chat.type.SUPERGROUP, 
+                                                       self.message.chat.type.CHANNEL]
         self.suproc = None
         self.sameDir = sameDir
         self.rcFlags = rcFlags
@@ -163,7 +162,11 @@ class MirrorLeechListener:
             return
 
         if name == "None" or self.isQbit or not await aiopath.exists(f"{self.dir}/{name}"):
-            files = await listdir(self.dir)
+            try:
+                files = await listdir(self.dir)
+            except Exception as e:
+                await self.onUploadError(str(e))
+                return
             name = files[-1]
             if name == "yt-dlp-thumb":
                 name = files[0]
@@ -177,9 +180,8 @@ class MirrorLeechListener:
         await start_from_queued()
         user_dict = user_data.get(self.message.from_user.id, {})
 
-        if self.join:
-            if await aiopath.isdir(dl_path):
-                await join_files(dl_path)
+        if self.join and await aiopath.isdir(dl_path):
+            await join_files(dl_path)
 
         if self.extract:
             pswd = self.extract if isinstance(self.extract, str) else ''
@@ -377,7 +379,7 @@ class MirrorLeechListener:
             async with download_dict_lock:
                 download_dict[self.uid] = upload_status
             await update_all_messages()
-            await sync_to_async(drive.upload, up_name, size, self.drive_id or config_dict['GDRIVE_ID'])
+            await sync_to_async(drive.upload, up_name, size, self.drive_id)
         else:
             size = await get_path_size(up_path)
             LOGGER.info(f"Upload Name: {up_name}")
@@ -387,12 +389,12 @@ class MirrorLeechListener:
             await update_all_messages()
             await RCTransfer.upload(up_path, size)
 
-    async def onUploadComplete(self, link, size, files, folders, mime_type, name, rclonePath='', drive_id=None):
+    async def onUploadComplete(self, link, size, files, folders, mime_type, name, rclonePath=''):
         if DATABASE_URL and config_dict['STOP_DUPLICATE_TASKS'] and self.raw_url:
             await DbManger().remove_download(self.raw_url)
         if self.isSuperGroup and config_dict['INCOMPLETE_TASK_NOTIFIER'] and DATABASE_URL:
             await DbManger().rm_complete_task(self.message.link)
-        LOGGER.info(f'Finish Uploading {name}')
+        LOGGER.info(f'Done Uploading {name}')
         lmsg = f'<b><i>{escape(name)}</i></b>'
         lmsg += f'\n<b>Req By</b>: <i>{self.tag}</i>'
         gmsg = f'Hey <b>{self.tag}</b>!\nYour job is done.'
@@ -469,16 +471,16 @@ class MirrorLeechListener:
                 buttons = ButtonMaker()
                 if link:
                     if link.startswith("https://drive.google.com/") and not config_dict['DISABLE_DRIVE_LINK']:
-                        buttons.ubutton("Drive Link", link)
+                        buttons.ubutton("♻️ Drive Link", link)
                     elif not link.startswith("https://drive.google.com/"):
-                        buttons.ubutton("Cloud Link", link)
+                        buttons.ubutton("☁️ Cloud Link", link)
                 if rclonePath and (RCLONE_SERVE_URL := config_dict['RCLONE_SERVE_URL']):
                     remote, path = rclonePath.split(':', 1)
                     url_path = url_quote(f'{path}')
                     share_url = f'{RCLONE_SERVE_URL}/{remote}/{url_path}'
                     if mime_type == "Folder":
                         share_url += '/'
-                    buttons.ubutton("Rclone Link", share_url)
+                    buttons.ubutton("🔗 Rclone Link", share_url)
                 elif not rclonePath:
                     INDEX_URL = self.index_link if self.drive_id else config_dict['INDEX_URL']
                     if INDEX_URL:
@@ -486,12 +488,12 @@ class MirrorLeechListener:
                         share_url = f'{INDEX_URL}/{url_path}'
                         if mime_type == "Folder":
                             share_url += '/'
-                            buttons.ubutton("Direct Link", share_url)
+                            buttons.ubutton("📁 Direct Link", share_url)
                         else:
-                            buttons.ubutton("Direct Link", share_url)
+                            buttons.ubutton("🔗 Direct Link", share_url)
                             if mime_type.startswith(('image', 'video', 'audio')):
                                 share_urls = f'{INDEX_URL}/{url_path}?a=view'
-                                buttons.ubutton("View Link", share_urls)
+                                buttons.ubutton("🌐 View Link", share_urls)
                 buttons = extra_btns(buttons)
                 if self.dmMessage:
                     await sendMessage(self.dmMessage, lmsg + msg + _msg, buttons.build_menu(2))
@@ -500,7 +502,7 @@ class MirrorLeechListener:
                     await sendMessage(self.message, lmsg + msg + _msg, buttons.build_menu(2))
                 if self.logMessage:
                     if link.startswith("https://drive.google.com/") and config_dict['DISABLE_DRIVE_LINK']:
-                        buttons.ubutton("Drive Link", link, 'header')
+                        buttons.ubutton("♻️ Drive Link", link, 'header')
                     await sendMessage(self.logMessage, lmsg + msg + _msg, buttons.build_menu(2))
             else:
                 if self.dmMessage:
@@ -548,7 +550,8 @@ class MirrorLeechListener:
                 self.sameDir['total'] -= 1
         msg = f"Sorry {self.tag}!\nYour download has been stopped.\n\n<b>Reason</b>: {escape(str(error))}"
         msg += f"\n<b>Elp</b>: {get_readable_time(time() - self.extra_details['startTime'])}\n<b>Upload</b>: {self.extra_details['mode']}"
-        await sendMessage(self.message, msg, button)
+        reply_message = await sendMessage(self.message, msg, button)
+        await auto_delete_message(self.message, reply_message)
         if self.logMessage:
             await sendMessage(self.logMessage, msg, button)
         if count == 0:
@@ -590,7 +593,8 @@ class MirrorLeechListener:
                 self.sameDir.remove(self.uid)
         msg = f"{self.tag} {escape(str(error))}\n<b>Elp</b>: {get_readable_time(time() - self.extra_details['startTime'])}"
         msg += f"\n<b>Upload</b>: {self.extra_details['mode']}"
-        await sendMessage(self.message, msg)
+        reply_message = await sendMessage(self.message, msg)
+        await auto_delete_message(self.message, reply_message)
         if self.logMessage:
             await sendMessage(self.logMessage, msg)
         if count == 0:
