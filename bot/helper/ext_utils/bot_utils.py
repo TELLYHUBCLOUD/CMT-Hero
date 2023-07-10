@@ -103,7 +103,7 @@ def bt_selection_buttons(id_, isCanCncl=True):
 
 
 async def get_telegraph_list(telegraph_content):
-    path = [(await telegraph.create_page(title='Pea Masamba Drive Search', content=content))["path"] for content in telegraph_content]
+    path = [(await telegraph.create_page(title='Pea Masamba Search', content=content))["path"] for content in telegraph_content]
     if len(path) > 1:
         await telegraph.edit_telegraph(path, telegraph_content)
     buttons = ButtonMaker()
@@ -189,7 +189,7 @@ def get_readable_message():
         msg += f" | <b>By:</b> <code>{tag}</code>"
         msg += f"\n Stop:</b> <code>/{BotCommands.CancelMirror}_{download.gid()}</code>"
         msg += f"\n<b>▬▬▬▬▬▬▬▬▬▬▬▬▬</b>"
-        msg += "\n\n" 
+        msg += "\n\n"
 
     if len(msg) == 0:
         return None, None
@@ -215,9 +215,9 @@ def get_readable_message():
 
     if tasks > STATUS_LIMIT:
         buttons = ButtonMaker()
-        buttons.ibutton("🞀", "status pre")
+        buttons.ibutton("⫷", "status pre")
         buttons.ibutton(f"{PAGE_NO}/{PAGES}", "status ref")
-        buttons.ibutton("🞂", "status nex")
+        buttons.ibutton("⫸", "status nex")
         button = buttons.build_menu(3)
     msg += f"\n<b>🅿🅴🅰  🅼🅰🆂🅰🅼🅱🅰</b>"
     msg += f"\n<b>ACTIVE</b>: <code>{tasks}</code>"
@@ -295,48 +295,47 @@ def get_mega_link_type(url):
 def arg_parser(items, arg_base):
     if not items:
         return arg_base
+    bool_arg_set = {
+                    '-b', '-bulk', 
+                    '-e', '-uz', '-unzip', 
+                    '-z', '-zip', 
+                    '-s', '-select', 
+                    '-j', '-join', 
+                    '-d', '-seed'}
     t = len(items)
-    i = 0
-    while i + 1 <= t:
-        part = items[i]
+    m = 0
+    arg_start = -1
+    while m + 1 <= t:
+        part = items[m].strip()
         if part in arg_base:
-            if part in [
-                        '-s', '-select', 
-                        '-j', '-join'
-                    ]:
+            if arg_start == -1:
+                arg_start = m
+            if m + 1 == t and part in bool_arg_set or part in [
+                                                                '-s', '-select', 
+                                                                '-j', '-join'
+                                                            ]:
                 arg_base[part] = True
-            elif t == i + 1:
-                if part in [
-                            '-b', '-bulk', 
-                            '-e', '-uz', '-unzip', 
-                            '-z', '-zip', 
-                            '-s', '-select', 
-                            '-j', '-join', 
-                            '-d', '-seed'
-                        ]:
-                    arg_base[part] = True
             else:
                 sub_list = []
-                for j in range(i+1, t):
-                    item = items[j]
+                for j in range(m + 1, t):
+                    item = items[j].strip()
                     if item in arg_base:
-                        if part in [
-                                    '-b', '-bulk', 
-                                    '-e', '-uz', '-unzip', 
-                                    '-z', '-zip', 
-                                    '-s', '-select', 
-                                    '-j', '-join', 
-                                    '-d', '-seed'
-                                ]:
+                        if part in bool_arg_set and not sub_list:
                             arg_base[part] = True
                         break
-                    sub_list.append(item)
-                    i += 1
+                    sub_list.append(item.strip())
+                    m += 1
                 if sub_list:
                     arg_base[part] = " ".join(sub_list)
-        i += 1
-    if items[0] not in arg_base:
-        arg_base['link'] = items[0]
+        m += 1
+    link = []
+    if items[0].strip() not in arg_base:
+        if arg_start == -1:
+            link.extend(item.strip() for item in items)
+        else:
+            link.extend(items[r].strip() for r in range(arg_start))
+        if link:
+            arg_base['link'] = " ".join(link)
     return arg_base
 
 
