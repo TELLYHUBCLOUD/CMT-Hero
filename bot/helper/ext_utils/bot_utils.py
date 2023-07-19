@@ -103,7 +103,7 @@ def bt_selection_buttons(id_, isCanCncl=True):
 
 
 async def get_telegraph_list(telegraph_content):
-    path = [(await telegraph.create_page(title='Pea Masamba Search', content=content))["path"] for content in telegraph_content]
+    path = [(await telegraph.create_page(title='Pea Masamba Drive Search', content=content))["path"] for content in telegraph_content]
     if len(path) > 1:
         await telegraph.edit_telegraph(path, telegraph_content)
     buttons = ButtonMaker()
@@ -124,7 +124,6 @@ def get_progress_bar_string(pct):
         p_str += incomplete_char
     p_str += '□' * (10 - len(p_str))
     return p_str
-
 
 def get_readable_message():
     msg = "<b>𝐁𝐎𝐓 𝐌𝐈𝐑𝐑𝐎𝐑</b>\n\n"
