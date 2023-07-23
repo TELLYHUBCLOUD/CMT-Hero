@@ -108,17 +108,14 @@ async def get_telegraph_list(telegraph_content):
     return buttons.build_menu(1)
 
 
-def get_progress_bar_string(pct):    
+def get_progress_bar_string(pct):
+    if isinstance(pct, str):
+        pct = float(pct.strip('%'))
     p = min(max(pct, 0), 100)
-    cFull = int(p / 10)
-    cIncomplete = int(round((p / 10 - cFull) * 4))
-    p_str = '■' * cFull
-    if cIncomplete > 0:
-        s = '▤▥▦▧▨▩■'
-        incomplete_char = s[cIncomplete - 1]
-        p_str += incomplete_char
-    p_str += '□' * (10 - len(p_str))
-    return p_str
+    cFull = int(p // 10)
+    p_str = '▓' * cFull
+    p_str += '░' * (10 - cFull)
+    return f"{p_str}"
 
 def get_readable_message():
     msg = "<b>𝐁𝐎𝐓 𝐌𝐈𝐑𝐑𝐎𝐑</b>\n\n"
