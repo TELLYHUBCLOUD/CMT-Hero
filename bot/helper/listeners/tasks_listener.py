@@ -397,7 +397,7 @@ class MirrorLeechListener:
         LOGGER.info(f'Done Uploading {name}')
         lmsg = f'<b><i>{escape(name)}</i></b>'
         lmsg += f'\n<b>Req By</b>: <i>{self.tag}</i>'
-        gmsg = f'Hey <b>{self.tag}</b>!\nYour job is done.'
+        gmsg = f'Hei <b>{self.tag}</b>!\nMirror kamu sudah kelar, bro.'
         msg = f'\n\n<b>Size</b>: <i>{get_readable_file_size(size)}</i>'
         msg += f"\n<b>Elp</b>: <i>{get_readable_time(time() - self.extra_details['startTime'])}</i>"
         msg += f"\n<b>Upload</b>: <i>{self.extra_details['mode']}</i>"
@@ -548,21 +548,22 @@ class MirrorLeechListener:
             if self.sameDir and self.uid in self.sameDir['tasks']:
                 self.sameDir['tasks'].remove(self.uid)
                 self.sameDir['total'] -= 1
-        msg = f"Sorry {self.tag}!\nYour download has been stopped.\n\n<b>Reason</b>: {escape(str(error))}"
-        msg += f"\n<b>Elp</b>: {get_readable_time(time() - self.extra_details['startTime'])}\n<b>Upload</b>: {self.extra_details['mode']}"
+        msg = f"Sorry {self.tag}!\nYour download has been stopped."
+        msg += f"\n\n<b>Reason</b>: {escape(str(error))}"
+        msg += f"\n<b>Elp</b>: {get_readable_time(time() - self.extra_details['startTime'])}"
+        msg += f"\n<b>Upload</b>: {self.extra_details['mode']}"
         reply_message = await sendMessage(self.message, msg, button)
-        await auto_delete_message(self.message, reply_message)
         if self.logMessage:
             await sendMessage(self.logMessage, msg, button)
         if count == 0:
             await self.clean()
         else:
             await update_all_messages()
-
         if DATABASE_URL and config_dict['STOP_DUPLICATE_TASKS'] and self.raw_url:
             await DbManger().remove_download(self.raw_url)
         if self.isSuperGroup and config_dict['INCOMPLETE_TASK_NOTIFIER'] and DATABASE_URL:
             await DbManger().rm_complete_task(self.message.link)
+        await auto_delete_message(self.message, reply_message)
 
         async with queue_dict_lock:
             if self.uid in queued_dl:
@@ -591,10 +592,10 @@ class MirrorLeechListener:
             count = len(download_dict)
             if self.uid in self.sameDir:
                 self.sameDir.remove(self.uid)
-        msg = f"{self.tag} {escape(str(error))}\n<b>Elp</b>: {get_readable_time(time() - self.extra_details['startTime'])}"
+        msg = f"{self.tag} {escape(str(error))}"
+        msg += f"\n<b>Elp</b>: {get_readable_time(time() - self.extra_details['startTime'])}"
         msg += f"\n<b>Upload</b>: {self.extra_details['mode']}"
         reply_message = await sendMessage(self.message, msg)
-        await auto_delete_message(self.message, reply_message)
         if self.logMessage:
             await sendMessage(self.logMessage, msg)
         if count == 0:
@@ -605,6 +606,7 @@ class MirrorLeechListener:
             await DbManger().remove_download(self.raw_url)
         if self.isSuperGroup and config_dict['INCOMPLETE_TASK_NOTIFIER'] and DATABASE_URL:
             await DbManger().rm_complete_task(self.message.link)
+        await auto_delete_message(self.message, reply_message)
 
         async with queue_dict_lock:
             if self.uid in queued_dl:
