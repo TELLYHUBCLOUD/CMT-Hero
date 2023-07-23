@@ -108,8 +108,7 @@ async def get_telegraph_list(telegraph_content):
     return buttons.build_menu(1)
 
 
-def get_progress_bar_string(pct):
-    pct = float(pct.strip('%'))
+def get_progress_bar_string(pct):    
     p = min(max(pct, 0), 100)
     cFull = int(p / 10)
     cIncomplete = int(round((p / 10 - cFull) * 4))
