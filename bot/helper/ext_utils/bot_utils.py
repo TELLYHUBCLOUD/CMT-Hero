@@ -210,7 +210,7 @@ def get_readable_message():
 
     if tasks <= STATUS_LIMIT:
         buttons = ButtonMaker()
-        buttons.ibutton("BOT INFO", "stats")
+        buttons.ibutton("BOT INFO CMT", "stats")
         button = buttons.build_menu(1)
 
 
