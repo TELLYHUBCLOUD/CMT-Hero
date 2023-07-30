@@ -7,11 +7,13 @@ from html import escape
 from re import match
 from time import time
 from uuid import uuid4
-from psutil import disk_usage
+from psutil import cpu_percent, disk_usage, virtual_memory, net_io_counters
 from pyrogram.types import BotCommand
+from pyrogram.handlers import CallbackQueryHandler
+from pyrogram.filters import regex
 from aiohttp import ClientSession
 
-from bot import (bot_loop, bot_name, botStartTime, config_dict, download_dict,
+from bot import (bot, bot_loop, bot_name, botStartTime, config_dict, download_dict,
                  download_dict_lock, extra_buttons, user_data)
 from bot.helper.ext_utils.shortener import short_url
 from bot.helper.ext_utils.telegraph_helper import telegraph
@@ -103,7 +105,7 @@ async def get_telegraph_list(telegraph_content):
     if len(path) > 1:
         await telegraph.edit_telegraph(path, telegraph_content)
     buttons = ButtonMaker()
-    buttons.ubutton("👁‍🗨 VIEW", f"https://graph.org/{path[0]}", 'header')
+    buttons.ubutton("🔦 VIEW", f"https://graph.org/{path[0]}", 'header')
     buttons = extra_btns(buttons)
     return buttons.build_menu(1)
 
@@ -117,8 +119,9 @@ def get_progress_bar_string(pct):
     p_str += '░' * (10 - cFull)
     return f"{p_str}"
 
+
 def get_readable_message():
-    msg = "<b>𝐁𝐎𝐓 𝐌𝐈𝐑𝐑𝐎𝐑</b>\n\n"
+    msg = ""
     button = None
     STATUS_LIMIT = config_dict['STATUS_LIMIT']
     tasks = len(download_dict)
@@ -204,12 +207,20 @@ def get_readable_message():
         elif tstatus == MirrorStatus.STATUS_UPLOADING or tstatus == MirrorStatus.STATUS_SEEDING:
             up_speed += speed_in_bytes_per_second
 
+
+    if tasks <= STATUS_LIMIT:
+        buttons = ButtonMaker()
+        buttons.ibutton("BOT INFO", "stats")
+        button = buttons.build_menu(1)
+
+
     if tasks > STATUS_LIMIT:
         buttons = ButtonMaker()
         buttons.ibutton("⫷", "status pre")
         buttons.ibutton(f"{PAGE_NO}/{PAGES}", "status ref")
         buttons.ibutton("⫸", "status nex")
         button = buttons.build_menu(3)
+
     msg += f"\n<b>▬ 🄿🄴🄰 🄼🄰🅂🄰🄼🄱🄰 ▬</b>"    
     msg += f"\n<b>DISK</b>: <code>{get_readable_file_size(disk_usage(config_dict['DOWNLOAD_DIR']).free)}</code>"
     msg += f" | <b>UPTM</b>: <code>{get_readable_time(time() - botStartTime)}</code>"
@@ -220,6 +231,43 @@ def get_readable_message():
     if remaining_time <= 3600:
         msg += f"\n<b>Bot akan Restart dalam:</b> <code>{res_time}</code>"
     return msg, button
+
+
+async def fstats(_, query):
+    totl = len(download_dict)
+    free = max(config_dict['QUEUE_ALL'] - totl, 0)
+    inqu, dwld, upld, splt, clon, arch, extr, seed = [0] * 8
+    fdis = get_readable_file_size(disk_usage(config_dict["DOWNLOAD_DIR"]).free)
+    traf = get_readable_file_size(net_io_counters().bytes_sent + net_io_counters().bytes_recv)
+    uptm = time() - botStartTime
+    for download in download_dict.values():
+        status = download.status()
+        if status in MirrorStatus.STATUS_QUEUEDL or status in MirrorStatus.STATUS_QUEUEUP:
+            inqu += 1
+        elif status == MirrorStatus.STATUS_DOWNLOADING:
+            dwld += 1
+        elif status == MirrorStatus.STATUS_UPLOADING:
+            upld += 1
+        elif status == MirrorStatus.STATUS_SPLITTING:
+            splt += 1
+        elif status == MirrorStatus.STATUS_CLONING:
+            clon += 1
+        elif status == MirrorStatus.STATUS_ARCHIVING:
+            arch += 1
+        elif status == MirrorStatus.STATUS_EXTRACTING:
+            extr += 1
+        elif status == MirrorStatus.STATUS_SEEDING:
+            seed += 1
+
+    stat = f'_______Pea Masamba Bot Info_______\n\n'\
+           f'Total: {totl}, Free: {free}, Queued: {inqu}\n\n' \
+           f'Download: {dwld}, Upload: {upld}, Seed: {seed}\n\n' \
+           f'Split: {splt}, Clone: {clon}\n\n' \
+           f'Zip: {arch}, UnZip: {extr}\n\n' \
+           f'Free Disk: {fdis}\n' \
+           f'Traffic: {traf}\n' \
+           f'Bot Uptime: {get_readable_time(uptm)}'
+    await query.answer(stat, show_alert=True)
 
 
 async def turn_page(data):
@@ -234,7 +282,8 @@ async def turn_page(data):
             PAGE_NO = PAGES
         elif data[1] == "pre" and PAGE_NO > 1:
             PAGE_NO -= 1
-        STATUS_START = (PAGE_NO - 1) * STATUS_LIMIT
+        if data[1] != "stats":
+            STATUS_START = (PAGE_NO - 1) * STATUS_LIMIT
 
 
 def get_readable_time(seconds):
@@ -358,9 +407,12 @@ async def check_user_tasks(user_id, maxtask):
     downloading_tasks   = await getAllDownload(MirrorStatus.STATUS_DOWNLOADING, user_id)
     uploading_tasks     = await getAllDownload(MirrorStatus.STATUS_UPLOADING, user_id)
     cloning_tasks       = await getAllDownload(MirrorStatus.STATUS_CLONING, user_id)
+    splitting_tasks     = await getAllDownload(MirrorStatus.STATUS_SPLITTING, user_id)
+    archiving_tasks     = await getAllDownload(MirrorStatus.STATUS_ARCHIVING, user_id)
+    extracting_tasks    = await getAllDownload(MirrorStatus.STATUS_EXTRACTING, user_id)
     queuedl_tasks       = await getAllDownload(MirrorStatus.STATUS_QUEUEDL, user_id)
     queueup_tasks       = await getAllDownload(MirrorStatus.STATUS_QUEUEUP, user_id)
-    total_tasks         = downloading_tasks + uploading_tasks + cloning_tasks + queuedl_tasks + queueup_tasks
+    total_tasks         = downloading_tasks + uploading_tasks + cloning_tasks + splitting_tasks + archiving_tasks + extracting_tasks + queuedl_tasks + queueup_tasks
     return len(total_tasks) >= maxtask
 
 
@@ -445,3 +497,5 @@ async def set_commands(client):
             BotCommand(f'{BotCommands.UserSetCommand}', 'Users settings'),
             BotCommand(f'{BotCommands.HelpCommand}', 'Get detailed help'),
         ])
+
+bot.add_handler(CallbackQueryHandler(fstats, filters=regex("^stats")))
