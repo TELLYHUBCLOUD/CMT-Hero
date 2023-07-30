@@ -210,7 +210,7 @@ def get_readable_message():
 
     if tasks <= STATUS_LIMIT:
         buttons = ButtonMaker()
-        buttons.ibutton("BOT INFO CMT", "stats")
+        buttons.ibutton("𝙱𝙾𝚃 𝙸𝙽𝙵𝙾 𝙲𝙼𝚃", "stats")
         button = buttons.build_menu(1)
 
 
@@ -222,8 +222,6 @@ def get_readable_message():
         button = buttons.build_menu(3)
 
     msg += f"\n<b>▬ 🄿🄴🄰 🄼🄰🅂🄰🄼🄱🄰 ▬</b>"    
-    msg += f"\n<b>DISK</b>: <code>{get_readable_file_size(disk_usage(config_dict['DOWNLOAD_DIR']).free)}</code>"
-    msg += f" | <b>UPTM</b>: <code>{get_readable_time(time() - botStartTime)}</code>"
     msg += f"\n<b>DL</b>: <code>{get_readable_file_size(dl_speed)}/s</code>⧩"
     msg += f" | <b>UL</b>: <code>{get_readable_file_size(up_speed)}/s</code>◭"
     remaining_time = 86400 - (time() - botStartTime)
