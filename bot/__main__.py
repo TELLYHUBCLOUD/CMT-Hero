@@ -51,14 +51,14 @@ async def stats(_, message, edit_mode=False):
     cpuUsage    = cpu_percent(interval=1)
     v_core      = cpu_count(logical=True) - cpu_count(logical=False)
     memory      = virtual_memory()
-    swap        = swap_memory()
     mem_p       = memory.percent
+    swap        = swap_memory()
 
     bot_stats = f'<b><i><u>Pea Masamba Bot Statis</u></i></b>\n\n'\
-                f'<code>CPU  : </code>{get_progress_bar_string(cpuUsage)} {cpuUsage}%\n' \
-                f'<code>RAM  : </code>{get_progress_bar_string(mem_p)} {mem_p}%\n' \
-                f'<code>SWAP : </code>{get_progress_bar_string(swap.percent)} {swap.percent}%\n' \
-                f'<code>DISK : </code>{get_progress_bar_string(disk)} {disk}%\n\n' \
+                f'<code>CPU  : {get_progress_bar_string(cpuUsage)}</code> {cpuUsage}%\n' \
+                f'<code>RAM  : {get_progress_bar_string(mem_p)}</code> {mem_p}%\n' \
+                f'<code>SWAP : {get_progress_bar_string(swap.percent)}</code> {swap.percent}%\n' \
+                f'<code>DISK : {get_progress_bar_string(disk)}</code> {disk}%\n\n' \
                 f'<code>Bot Uptime      : </code> {botTime}\n' \
                 f'<code>BOT Restart     : </code> {res_time}\n\n' \
                 f'<code>Uploaded        : </code> {sent}\n' \
@@ -315,7 +315,7 @@ async def restart_notification():
 
     async def send_incompelete_task_message(cid, msg):
         try:
-            if msg.startswith('Bot sudah di Restart!'):
+            if msg.startswith('Restarted Successfully!'):
                 await bot.edit_message_text(chat_id=chat_id, message_id=msg_id, text='Restarted Successfully!')
                 await bot.send_message(chat_id, msg, disable_web_page_preview=True, reply_to_message_id=msg_id)
                 await aioremove(".restartmsg")
@@ -366,7 +366,7 @@ async def main():
     bot.add_handler(CallbackQueryHandler(send_sys_stats,    filters=regex("^show_sys_stats")))
     bot.add_handler(CallbackQueryHandler(send_repo_stats,   filters=regex("^show_repo_stats")))
     bot.add_handler(CallbackQueryHandler(send_bot_limits,   filters=regex("^show_bot_limits")))
-    LOGGER.info("Congratulations, Bot Started Successfully!")
+    LOGGER.info("Selamat, Bot Berhasil Dimulai!")
     signal(SIGINT, exit_clean_up)
 
 bot.loop.run_until_complete(main())
