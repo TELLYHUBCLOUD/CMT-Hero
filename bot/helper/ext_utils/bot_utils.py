@@ -101,7 +101,8 @@ def bt_selection_buttons(id_, isCanCncl=True):
 
 
 async def get_telegraph_list(telegraph_content):
-    path = [(await telegraph.create_page(title='Pea Masamba Drive Search', content=content))["path"] for content in telegraph_content]
+    path = [(await telegraph.create_page(
+        title='Pea Masamba Drive Search', content=content))["path"] for content in telegraph_content]
     if len(path) > 1:
         await telegraph.edit_telegraph(path, telegraph_content)
     buttons = ButtonMaker()
@@ -115,8 +116,8 @@ def get_progress_bar_string(pct):
         pct = float(pct.strip('%'))
     p = min(max(pct, 0), 100)
     cFull = int(p // 10)
-    p_str = '▓' * cFull
-    p_str += '░' * (10 - cFull)
+    p_str = '█' * cFull
+    p_str += '▒' * (10 - cFull)
     return f"{p_str}"
 
 
@@ -217,7 +218,7 @@ def get_readable_message():
     if tasks > STATUS_LIMIT:
         buttons = ButtonMaker()
         buttons.ibutton("⫷", "status pre")
-        buttons.ibutton(f"{PAGE_NO}/{PAGES}", "status ref")
+        buttons.ibutton(f"{PAGE_NO}/{PAGES}", "stats")
         buttons.ibutton("⫸", "status nex")
         button = buttons.build_menu(3)
 
@@ -232,12 +233,13 @@ def get_readable_message():
 
 
 async def fstats(_, query):
+    cpup = cpu_percent(interval=1)
+    ramp = virtual_memory().percent
+    disk = disk_usage(config_dict["DOWNLOAD_DIR"]).percent
     totl = len(download_dict)
-    free = max(config_dict['QUEUE_ALL'] - totl, 0)
-    inqu, dwld, upld, splt, clon, arch, extr, seed = [0] * 8
-    fdis = get_readable_file_size(disk_usage(config_dict["DOWNLOAD_DIR"]).free)
     traf = get_readable_file_size(net_io_counters().bytes_sent + net_io_counters().bytes_recv)
-    uptm = time() - botStartTime
+    free = max(config_dict['QUEUE_ALL'] - totl, 0) if config_dict['QUEUE_ALL'] else '∞'
+    inqu, dwld, upld, splt, arch, extr, seed = [0] * 7
     for download in download_dict.values():
         status = download.status()
         if status in MirrorStatus.STATUS_QUEUEDL or status in MirrorStatus.STATUS_QUEUEUP:
@@ -248,8 +250,6 @@ async def fstats(_, query):
             upld += 1
         elif status == MirrorStatus.STATUS_SPLITTING:
             splt += 1
-        elif status == MirrorStatus.STATUS_CLONING:
-            clon += 1
         elif status == MirrorStatus.STATUS_ARCHIVING:
             arch += 1
         elif status == MirrorStatus.STATUS_EXTRACTING:
