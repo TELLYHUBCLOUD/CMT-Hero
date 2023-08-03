@@ -402,14 +402,12 @@ class MirrorLeechListener:
         msg += f"\n<b>Elp</b>: <i>{get_readable_time(time() - self.extra_details['startTime'])}</i>"
         msg += f"\n<b>Upload</b>: <i>{self.extra_details['mode']}</i>"
         _msg = '' if rclonePath == '' else f'\n\n<b>Path</b>: <code>{rclonePath}</code>'
-        msg += f"\n</b>Hasil mirror sudah kami pindahkan<a href='https://t.me/peamasambamirror'> 𝑫𝒊𝒔𝒊𝒏𝒊</a> </b>\n"
-        msg_ = '\n\n<b><i>Links has been sent in your DM.</i></b>'
+        msg += f"\n</b>Hasil mirror sudah kami pindahkan<a href='https://t.me/peamasambamirror'> 𝑫𝒊𝒔𝒊𝒏𝒊</a> </b>\n"        
         buttons = ButtonMaker()
         if self.isLeech:
             msg += f'\n<b>Total Files</b>: <i>{folders}</i>\n'
             if mime_type != 0:
-                msg += f'<b>Corrupted Files</b>: <i>{mime_type}</i>\n'
-            msg_ = '\n<b><i>Files has been sent in your DM.</i></b>'
+                msg += f'<b>Corrupted Files</b>: <i>{mime_type}</i>\n'          
             if not self.dmMessage:
                 if not files:
                     await sendMessage(self.message, lmsg + msg)
