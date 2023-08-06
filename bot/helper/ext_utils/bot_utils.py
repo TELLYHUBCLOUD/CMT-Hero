@@ -429,9 +429,9 @@ def checking_access(user_id, button=None):
         user_data[user_id].update(data)
         if button is None:
             button = ButtonMaker()
-        button.ubutton('Get New Token', short_url(f'https://telegram.me/{bot_name}?start={token}'))
-        return 'Your <b>Token</b> is expired. Get a new one.', button
-    return None, button
+        button.ubutton('Ambil Token Baru Dulu', short_url(f'https://telegram.me/{bot_name}?start={token}'))
+        return '<b>Token</b> kamu belum ada. Klik Start di bot untuk memulainya.\n\n <b>2:</b> Lalu mirror ulang kembali, okay.\n\n<b>PEA MASAMBA</b>', button
+    return None, button    
 
 
 async def cmd_exec(cmd, shell=False):
