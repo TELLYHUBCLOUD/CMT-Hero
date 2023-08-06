@@ -403,7 +403,8 @@ class MirrorLeechListener:
         msg += f"\n<code>Upload          </code>: {self.extra_details['mode']}"
         _msg = '' if rclonePath == '' else f'\n\n<code>Path            </code>: {rclonePath}'
         msg_ = '\n\n<b><i>Links has been sent in your DM.</i></b>'
-        msg += f"\n</b>Hasil mirror sudah kami pindahkan<a href='https://t.me/peamasambamirror'> 𝑫𝒊𝒔𝒊𝒏𝒊</a> </b>\n"
+        msg += f"\n</b>Hasil mirror sudah kami pindahkan<a href='https://t.me/peamasambamirror'> 𝑫𝒊𝒔𝒊𝒏𝒊</a> </b>\n\n"
+        msg += f"\n</b>Join Group Google Drive CMT<a href='https://groups.google.com/g/cmtmasamba'> 𝑫𝒊𝒔𝒊𝒏𝒊</a> </b>\n"
         buttons = ButtonMaker()
         if self.isLeech:
             msg += f'\n<code>Total Files     </code>: {folders}\n'
