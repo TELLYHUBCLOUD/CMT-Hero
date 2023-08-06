@@ -29,17 +29,17 @@ PAGES           = 1
 PAGE_NO         = 1
 
 class MirrorStatus:
-    STATUS_UPLOADING    = "Uploading"
-    STATUS_DOWNLOADING  = "Downloading"
-    STATUS_CLONING      = "Cloning"
-    STATUS_QUEUEDL      = "Queued Download"
-    STATUS_QUEUEUP      = "Queued Upload"
-    STATUS_PAUSED       = "Paused"
-    STATUS_ARCHIVING    = "Archiving"
-    STATUS_EXTRACTING   = "Extracting"
-    STATUS_SPLITTING    = "Spliting"
-    STATUS_CHECKING     = "CheckingUp"
-    STATUS_SEEDING      = "Seeding"
+    STATUS_UPLOADING    = "🆄🄿🅻🄾🄰🅳"
+    STATUS_DOWNLOADING  = "🄳🄾🆆🅽🅻🄾🄰🅳"
+    STATUS_CLONING      = "🅒🅛🅞🅝🅔"
+    STATUS_QUEUEDL      = "🅠🅤🅔🅤🅔 🅓🅝"
+    STATUS_QUEUEUP      = "🅠🅤🅔🅤🅔 🅤🅟"
+    STATUS_PAUSED       = "🅟🅐🅤🅢🅔"
+    STATUS_ARCHIVING    = "🅐🅡🅒🅗🅘🅥🅔"
+    STATUS_EXTRACTING   = "🅴🅇🅃🆁🄰🄲🆃"
+    STATUS_SPLITTING    = "🅢🅟🅛🅘🅣"
+    STATUS_CHECKING     = "🅒🅗🅔🅒🅚🅤🅟"
+    STATUS_SEEDING      = "🅢🅔🅔🅓"
 
 class setInterval:
     def __init__(self, interval, action):
@@ -102,11 +102,11 @@ def bt_selection_buttons(id_, isCanCncl=True):
 
 async def get_telegraph_list(telegraph_content):
     path = [(await telegraph.create_page(
-        title='Z Drive Search', content=content))["path"] for content in telegraph_content]
+        title='Pea Masamba Drive Search', content=content))["path"] for content in telegraph_content]
     if len(path) > 1:
         await telegraph.edit_telegraph(path, telegraph_content)
     buttons = ButtonMaker()
-    buttons.ubutton("🔎 VIEW", f"https://graph.org/{path[0]}", 'header')
+    buttons.ubutton("🔦 VIEW", f"https://graph.org/{path[0]}", 'header')
     buttons = extra_btns(buttons)
     return buttons.build_menu(1)
 
@@ -140,49 +140,51 @@ def get_readable_message():
 
         elapsed = time() - download.extra_details['startTime']
 
-        msg += f"\n<b>File Name</b> » <i>{escape(f'{download.name()}')}</i>\n\n" if elapsed <= config_dict['AUTO_DELETE_MESSAGE_DURATION'] else ""
-        msg += f"⌑ <b>{download.status()}</b>"
+        msg += f"\n<b> <i>{escape(f'{download.name()}')}</i>\n\n" if elapsed <= config_dict['AUTO_DELETE_MESSAGE_DURATION'] else ""
+        msg += f" <b>{download.status()}</b>"
 
         if download.status() not in [MirrorStatus.STATUS_SEEDING, MirrorStatus.STATUS_PAUSED,
                                      MirrorStatus.STATUS_QUEUEDL, MirrorStatus.STATUS_QUEUEUP]:
 
-            msg += f" » {download.speed()}"
-            msg += f"\n⌑ {get_progress_bar_string(download.progress())} » {download.progress()}"
-            msg += f"\n⌑ <code>Done     </code>» {download.processed_bytes()} of {download.size()}"
-            msg += f"\n⌑ <code>ETA      </code>» {download.eta()}"
-            msg += f"\n⌑ <code>Active   </code>» {get_readable_time(elapsed)}"
-            msg += f"\n⌑ <code>Engine   </code>» {download.engine}"
+            msg += f"\n\n {get_progress_bar_string(download.progress())} » {download.progress()}"
+            msg += f"\n <b>Speed:</b> <code>{download.speed()}</code>"            
+            msg += f"\n <b>Done:</b> <code>{download.processed_bytes()}</code> of <code>{download.size()}</code>"
+            msg += f"\n <b>ETA:</b> <code>{download.eta()}</code> | "
+            msg += f"<b>Elp:</b> <code>{get_readable_time(elapsed)}</code>"
+            msg += f"\n <b>Engine:</b> <code>{download.engine}</code>"
 
             if hasattr(download, 'playList'):
                 try:
                     if playlist:=download.playList():
-                        msg += f"\n⌑ <code>YT Count </code>» {playlist}"
+                        msg += f"\n <code>YT Count: </code> {playlist}"
                 except:
                     pass
 
             if hasattr(download, 'seeders_num'):
                 try:
-                    msg += f"\n⌑ <code>Seeders  </code>» {download.seeders_num()}"
-                    msg += f"\n⌑ <code>Leechers </code>» {download.leechers_num()}"
+                    msg += f"\n <b>Seeders:</b> <code>{download.seeders_num()}</code>"
+                    msg += f" | <b>Leechers:</b> <code>{download.leechers_num()}</code>"
                 except:
                     pass
 
         elif download.status() == MirrorStatus.STATUS_SEEDING:
-            msg += f"\n⌑ <code>Size     </code>» {download.size()}"
-            msg += f"\n⌑ <code>Speed    </code>» {download.upload_speed()}"
-            msg += f"\n⌑ <code>Uploaded </code>» {download.uploaded_bytes()}"
-            msg += f"\n⌑ <code>Ratio    </code>» {download.ratio()}"
-            msg += f"\n⌑ <code>Time     </code>» {download.seeding_time()}"
+            msg += f"\n <b>Size:</b> {download.size()}"
+            msg += f"\n <b>Speed:</b> {download.upload_speed()}"
+            msg += f" | <b>Uploaded:</b> {download.uploaded_bytes()}"
+            msg += f"\n <b>Ratio:</b> {download.ratio()}"
+            msg += f" | <b>Time:</b> {download.seeding_time()}"
         else:
-            msg += f"\n⌑ <code>Size     </code>» {download.size()}"
+            msg += f"\n <b>Size:</b>  {download.size()}"
 
-        if config_dict['DELETE_LINKS']:
-            msg += f"\n⌑ <code>Task     </code>» {download.extra_details['mode']}"
+        if config_dict['DELETE_LINKS']:            
+            msg += f"\n <b>Upload:</b> <code>{download.extra_details['mode']}</code>"
         else:
-            msg += f"\n⌑ <code>Task     </code>» <a href='{download.message.link}'>{download.extra_details['mode']}</a>"
-
-        msg += f"\n⌑ <code>User     </code>» {tag}"
-        msg += f"\n⚠️ /{BotCommands.CancelMirror}_{download.gid()}\n\n"
+            msg += f"\n <b>Upload:</b> <code><a href='{download.message.link}'>{download.extra_details['mode']}</a></code>"
+       
+        msg += f" | <b>By:</b> <code>{tag}</code>"
+        msg += f"\n Stop:</b> <code>/{BotCommands.CancelMirror}_{download.gid()}</code>"
+        msg += f"\n<b>▬▬▬▬▬▬▬▬▬▬▬▬▬</b>"
+        msg += "\n\n"
 
     if len(msg) == 0:
         return None, None
@@ -209,7 +211,7 @@ def get_readable_message():
 
     if tasks <= STATUS_LIMIT:
         buttons = ButtonMaker()
-        buttons.ibutton("BOT INFO", "stats")
+        buttons.ibutton("𝙱𝙾𝚃 𝙸𝙽𝙵𝙾 𝙲𝙼𝚃", "stats")
         button = buttons.build_menu(1)
 
 
@@ -220,15 +222,13 @@ def get_readable_message():
         buttons.ibutton("⫸", "status nex")
         button = buttons.build_menu(3)
 
-    msg += "____________________________"
-    msg += f"\n<b>DISK</b>: <code>{get_readable_file_size(disk_usage(config_dict['DOWNLOAD_DIR']).free)}</code>"
-    msg += f" | <b>UPTM</b>: <code>{get_readable_time(time() - botStartTime)}</code>"
-    msg += f"\n<b>DL</b>: <code>{get_readable_file_size(dl_speed)}/s</code>"
-    msg += f" | <b>UL</b>: <code>{get_readable_file_size(up_speed)}/s</code>"
+    msg += f"\n<b>▬ 🄿🄴🄰 🄼🄰🅂🄰🄼🄱🄰 ▬</b>"    
+    msg += f"\n<b>DL</b>: <code>{get_readable_file_size(dl_speed)}/s</code>⧩"
+    msg += f" | <b>UL</b>: <code>{get_readable_file_size(up_speed)}/s</code>◭"
     remaining_time = 86400 - (time() - botStartTime)
-    res_time = '⚠️ ANYTIME ⚠️' if remaining_time <= 0 else get_readable_time(remaining_time)
+    res_time = '🚸 KAPAN SAJA 🚸' if remaining_time <= 0 else get_readable_time(remaining_time)
     if remaining_time <= 3600:
-        msg += f"\n<b>Bot Restarts In:</b> <code>{res_time}</code>"
+        msg += f"\n<b>Bot akan Restart dalam:</b> <code>{res_time}</code>"
     return msg, button
 
 
@@ -257,7 +257,7 @@ async def fstats(_, query):
         elif status == MirrorStatus.STATUS_SEEDING:
             seed += 1
 
-    stat = f'_______Zee Bot Info_______\n\n'\
+    stat = f'𝗣𝗲𝗮 𝗠𝗮𝘀𝗮𝗺𝗯𝗮 𝗕𝗼𝘁 𝗜𝗻𝗳𝗼\n\n'\
            f'C: {cpup}% | R: {ramp}% | D: {disk}%\n\n' \
            f'T  : {totl} | F  : {free} | Q : {inqu}\n' \
            f'DL: {dwld} | UL: {upld} | SD: {seed}\n' \
