@@ -222,7 +222,7 @@ def get_readable_message():
         buttons.ibutton("⫸", "status nex")
         button = buttons.build_menu(3)
 
-    msg += f"\n<b>═══❰ 𝑯𝑼𝑻 𝒌𝒆-78 𝑹𝑰 🇮🇩 ❱═══</b>"       
+    msg += f"\n<b>══❰ 𝑯𝑼𝑻 𝒌𝒆-78 𝑹𝑰 🇮🇩 ❱══</b>"       
     msg += f"\n<b>DL</b>: <code>{get_readable_file_size(dl_speed)}/s</code>⧩"
     msg += f" | <b>UL</b>: <code>{get_readable_file_size(up_speed)}/s</code>◭"
     remaining_time = 86400 - (time() - botStartTime)
