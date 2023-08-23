@@ -258,10 +258,10 @@ async def fstats(_, query):
             seed += 1
 
     stat = f'𝗣𝗲𝗮 𝗠𝗮𝘀𝗮𝗺𝗯𝗮 𝗕𝗼𝘁 𝗜𝗻𝗳𝗼\n\n'\
-           f'C: {cpup}% | R: {ramp}% | D: {disk}%\n\n' \
-           f'T  : {totl} | F  : {free} | Q : {inqu}\n' \
-           f'DL: {dwld} | UL: {upld} | SD: {seed}\n' \
-           f'ZP: {arch} | UZ: {extr} | SP: {splt}\n\n' \
+           f'🅲: {cpup}% | 🅁: {ramp}% | 🅳: {disk}%\n\n' \
+           f'🅃  : {totl} | 🅵  : {free} | 🅀 : {inqu}\n' \
+           f'🅳🄻: {dwld} | 🆄🄻: {upld} | 🅂🄳: {seed}\n' \
+           f'🅉🅿: {arch} | 🅄🆉: {extr} | 🅂🅿: {splt}\n\n' \
            f'Bandwidth Used: {traf}'
     await query.answer(stat, show_alert=True)
 
