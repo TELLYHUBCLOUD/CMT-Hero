@@ -262,7 +262,7 @@ async def fstats(_, query):
            f'🅃  : {totl} | 🅵  : {free} | 🅀 : {inqu}\n' \
            f'🅳🄻: {dwld} | 🆄🄻: {upld} | 🅂🄳: {seed}\n' \
            f'🅉🅿: {arch} | 🅄🆉: {extr} | 🅂🅿: {splt}\n\n' \
-           f'Bandwidth Used: {traf}'
+           f'𝑩𝒂𝒏𝒅𝒘𝒊𝒅𝒕𝒉 𝑼𝒔𝒆𝒅: {traf}'
     await query.answer(stat, show_alert=True)
 
 
