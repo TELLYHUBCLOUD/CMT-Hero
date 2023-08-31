@@ -85,7 +85,7 @@ class TelegraphHelper:
                     nxt_page += 1
             await self.edit_page(
                 path=path[prev_page],
-                title='Z Torrent Search',
+                title='Pea Masamba Torrent Search',
                 content=content
             )
         return
@@ -103,5 +103,5 @@ class TelegraphHelper:
 
 
 telegraph = TelegraphHelper(
-    'Z-Mirror', 'https://github.com/Dawn-India/Z-Mirror')
+    'Pea Masamba', 'https://subscene.com/u/1271292')
 bot_loop.run_until_complete(telegraph.create_account())
