@@ -41,7 +41,7 @@ async def stats(_, message, edit_mode=False):
     sysTime     = get_readable_time(time() - boot_time())
     botTime     = get_readable_time(time() - botStartTime)
     remaining_time = 86400 - (time() - botStartTime)
-    res_time = '⚠️ Soon ⚠️' if remaining_time <= 0 else get_readable_time(remaining_time)
+    res_time = '🚸 KAPAN SAJA 🚸' if remaining_time <= 0 else get_readable_time(remaining_time)
     total, used, free, disk = disk_usage('/')
     total       = get_readable_file_size(total)
     used        = get_readable_file_size(used)
@@ -55,7 +55,7 @@ async def stats(_, message, edit_mode=False):
     mem_p       = memory.percent
     swap        = swap_memory()
 
-    bot_stats = f'<b><i><u>Zee Bot Statistics</u></i></b>\n\n'\
+    bot_stats = f'<b><i><u>Pea Masamba Bot Statis</u></i></b>\n\n'\
                 f'<code>CPU  : {get_progress_bar_string(cpuUsage)}</code> {cpuUsage}%\n' \
                 f'<code>RAM  : {get_progress_bar_string(mem_p)}</code> {mem_p}%\n' \
                 f'<code>SWAP : {get_progress_bar_string(swap.percent)}</code> {swap.percent}%\n' \
@@ -66,7 +66,7 @@ async def stats(_, message, edit_mode=False):
                 f'<code>Downloaded      : </code> {recv}\n' \
                 f'<code>Total Bandwidth : </code> {tb}'
 
-    sys_stats = f'<b><i><u>Zee System Statistics</u></i></b>\n\n'\
+    sys_stats = f'<b><i><u>Pea Masamba System Statis</u></i></b>\n\n'\
                 f'<b>System Uptime:</b> <code>{sysTime}</code>\n' \
                 f'<b>CPU:</b> {get_progress_bar_string(cpuUsage)}<code> {cpuUsage}%</code>\n' \
                 f'<b>CPU Total Core(s):</b> <code>{cpu_count(logical=True)}</code>\n' \
@@ -127,7 +127,7 @@ async def send_repo_stats(_, query):
         version     = 'N/A'
         change_log  = 'N/A'
 
-    repo_stats = f'<b><i><u>Repo Info</u></i></b>\n\n' \
+    repo_stats = f'<b><i><u>Repo CMT Information</u></i></b>\n\n' \
                   f'<code>Updated   : </code> {last_commit}\n' \
                   f'<code>Version   : </code> {version}\n' \
                   f'<code>Changelog : </code> {change_log}'
@@ -153,7 +153,7 @@ async def send_bot_limits(_, query):
     UMT = 'Unlimited' if config_dict['USER_MAX_TASKS']  == '' else config_dict['USER_MAX_TASKS']
     BMT = 'Unlimited' if config_dict['QUEUE_ALL']       == '' else config_dict['QUEUE_ALL']
 
-    bot_limit = f'<b><i><u>Zee Bot Limitations</u></i></b>\n' \
+    bot_limit = f'<b><i><u>Pea Masamba Bot Limit</u></i></b>\n' \
                 f'<code>Torrent   : {TOR}</code> <b>GB</b>\n' \
                 f'<code>G-Drive   : {GDL}</code> <b>GB</b>\n' \
                 f'<code>Yt-Dlp    : {YTD}</code> <b>GB</b>\n' \
@@ -208,13 +208,13 @@ async def start(_, message):
         msg += f'Validity: {get_readable_time(int(config_dict["TOKEN_TIMEOUT"]))}'
         return await sendMessage(message, msg)
     elif config_dict['DM_MODE'] and message.chat.type != message.chat.type.SUPERGROUP:
-        start_string = 'Bot Started.\n' \
-                       'Now I will send all of your stuffs here.\n' \
-                       'Use me at: @Z_Mirror'
+        start_string = ''Bot Mulai.\n' \
+                       'Sekarang saya bisa mengirim file Anda ke sini.\n' \
+                       'Gunakan Bot ini disini: @peamasamba'
     elif not config_dict['DM_MODE'] and message.chat.type != message.chat.type.SUPERGROUP:
-        start_string = 'Sorry, you cannot use me here!\n' \
-                       'Join: @Z_Mirror to use me.\n' \
-                       'Thank You'
+        start_string = 'Maaf, Anda tak bisa pakai bot ini di sini!\n' \
+                       'Gabung @peamasamba jika mau pakai bot ini.\n' \
+                       'Terima Kasih'
     else:
         tag = message.from_user.mention
         start_string = 'Start me in DM, not in the group.\n' \
