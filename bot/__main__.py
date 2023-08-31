@@ -208,7 +208,7 @@ async def start(_, message):
         msg += f'Validity: {get_readable_time(int(config_dict["TOKEN_TIMEOUT"]))}'
         return await sendMessage(message, msg)
     elif config_dict['DM_MODE'] and message.chat.type != message.chat.type.SUPERGROUP:
-        start_string = ''Bot Mulai.\n' \
+        start_string = 'Bot Mulai.\n' \
                        'Sekarang saya bisa mengirim file Anda ke sini.\n' \
                        'Gunakan Bot ini disini: @peamasamba'
     elif not config_dict['DM_MODE'] and message.chat.type != message.chat.type.SUPERGROUP:
