@@ -173,7 +173,7 @@ def get_readable_message():
         else:
             msg += f"\n <b>Upload:</b> <code><a href='{download.message.link}'>{download.extra_details['mode']}</a></code>"       
         msg += f" | <b>By:</b> <code>{tag}</code>"
-        msg += f"\n Stop:</b> <code>/{BotCommands.CancelMirror}_{download.gid()}</code>"
+        msg += f"\n <b>Stop:</b> <code>/{BotCommands.CancelMirror}_{download.gid()}</code>"
         msg += f"\n<b>▬▬▬▬▬▬▬▬▬▬▬▬▬</b>"
         msg += "\n\n"
     if len(msg) == 0:
