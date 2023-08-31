@@ -19,7 +19,7 @@ class _BotCommands:
         self.CloneCommand       = f'msbclone{CMD_SUFFIX}'
         self.CountCommand       = f'msbcount{CMD_SUFFIX}'
         self.DeleteCommand      = f'msbdel{CMD_SUFFIX}'
-        self.CancelMirror       = f'msbabort{CMD_SUFFIX}'
+        self.CancelMirror       = f'x{CMD_SUFFIX}'
         self.ListCommand        = f'msblist{CMD_SUFFIX}'
         self.SearchCommand      = f'msbsearch{CMD_SUFFIX}'
         self.UsersCommand       = f'msbusers{CMD_SUFFIX}'
