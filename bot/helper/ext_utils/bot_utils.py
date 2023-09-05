@@ -135,7 +135,7 @@ def get_readable_message():
         if reply_to := download.message.reply_to_message:
             tag = reply_to.from_user.mention
         elapsed = time() - download.extra_details['startTime']
-        if config_dict['DELETE_LINKS']:            
+        if config_dict['DELETE_LINKS']:
             msg += f"\n<b> <i>{escape(f'{download.name()}')}</i>\n\n" if elapsed <= config_dict['AUTO_DELETE_MESSAGE_DURATION'] else ""
         else:
             msg += f"\n<b>File Name</b> » <i>{escape(f'{download.name()}')}</i>\n\n"
@@ -197,10 +197,10 @@ def get_readable_message():
             up_speed += speed_in_bytes_per_second
     msg += f"\n══❰ 𝐁𝐨𝐭 𝐌𝐢𝐫𝐫𝐨𝐫 𝐂𝐌𝐓 ❱══"       
     msg += f"\n<b>🄳🅻</b>: <code>{get_readable_file_size(dl_speed)}/s</code>⧩"
-    msg += f" | <b>🅄🅻</b>: <code>{get_readable_file_size(up_speed)}/s</code>◭"      
+    msg += f" | <b>🅄🅻</b>: <code>{get_readable_file_size(up_speed)}/s</code>◭"
     if tasks <= STATUS_LIMIT:
         buttons = ButtonMaker()
-        buttons.ibutton("𝙱𝙾𝚃 𝙸𝙽𝙵𝙾 𝙲𝙼𝚃", "status stats")
+        buttons.ibutton("BOT INFO", "status stats")
         button = buttons.build_menu(1)
     if tasks > STATUS_LIMIT:
         return get_pages(msg)
@@ -244,6 +244,20 @@ def get_readable_time(seconds):
             period_value, seconds = divmod(seconds, period_seconds)
             result += f'{int(period_value)}{period_name}'
     return result
+
+
+def text_size_to_bytes(size_text):
+    size = 0
+    size_text = size_text.lower()
+    if 'k' in size_text:
+        size += float(size_text.split('k')[0]) * 1024
+    elif 'm' in size_text:
+        size += float(size_text.split('m')[0]) * 1048576
+    elif 'g' in size_text:
+        size += float(size_text.split('g')[0]) *1073741824 
+    elif 't' in size_text:
+        size += float(size_text.split('t')[0]) *1099511627776 
+    return size
 
 
 def is_magnet(url):
