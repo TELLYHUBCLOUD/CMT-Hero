@@ -126,7 +126,7 @@ async def load_config():
     if len(UPTOBOX_TOKEN) == 0:
         UPTOBOX_TOKEN = ''
 
-  FILELION_API = environ.get('FILELION_API', '')
+    FILELION_API = environ.get('FILELION_API', '')
     if len(FILELION_API) == 0:
         FILELION_API = ''
 
@@ -296,11 +296,11 @@ async def load_config():
 
     UPSTREAM_REPO = environ.get('UPSTREAM_REPO', '')
     if len(UPSTREAM_REPO) == 0:
-        UPSTREAM_REPO = 'https://github.com/NadifMasamba/CMT-Hero'
+        UPSTREAM_REPO = 'https://gitlab.com/Dawn-India/Z-Mirror'
 
     UPSTREAM_BRANCH = environ.get('UPSTREAM_BRANCH', '')
     if len(UPSTREAM_BRANCH) == 0:
-        UPSTREAM_BRANCH = 'cmt_run'
+        UPSTREAM_BRANCH = 'zh_run'
 
     LOG_CHAT_ID = environ.get('LOG_CHAT_ID', '')
     if LOG_CHAT_ID.startswith('-100'):
