@@ -139,15 +139,15 @@ def get_readable_message():
             msg += f"\n<b> <i>{escape(f'{download.name()}')}</i>\n\n" if elapsed <= config_dict['AUTO_DELETE_MESSAGE_DURATION'] else ""
         else:
             msg += f"\n<b>File Name</b> » <i>{escape(f'{download.name()}')}</i>\n\n"
-        msg += f" <b>{download.status()}</b>"        
+        msg += f"⌑ <b>{download.status()}</b>"
         if download.status() not in [MirrorStatus.STATUS_SEEDING, MirrorStatus.STATUS_PAUSED,
-                                     MirrorStatus.STATUS_QUEUEDL, MirrorStatus.STATUS_QUEUEUP]:          
+                                     MirrorStatus.STATUS_QUEUEDL, MirrorStatus.STATUS_QUEUEUP]:
             msg += f"\n\n {get_progress_bar_string(download.progress())} » {download.progress()}"
             msg += f"\n <b>Speed:</b> <code>{download.speed()}</code>"            
             msg += f"\n <b>Done:</b> <code>{download.processed_bytes()}</code> of <code>{download.size()}</code>"
             msg += f"\n <b>ETA:</b> <code>{download.eta()}</code> | "
             msg += f"<b>Elp:</b> <code>{get_readable_time(elapsed)}</code>"
-            msg += f"\n <b>Engine:</b> <code>{download.engine}</code>"                                      
+            msg += f"\n <b>Engine:</b> <code>{download.engine}</code>"
             if hasattr(download, 'playList'):
                 try:
                     if playlist:=download.playList():
@@ -156,8 +156,7 @@ def get_readable_message():
                     pass
             if hasattr(download, 'seeders_num'):
                 try:
-                    msg += f"\n <b>Seeders:</b> <code>{download.seeders_num()}</code>"
-                    msg += f" | <b>Leechers:</b> <code>{download.leechers_num()}</code>"
+                    msg += f"\n <b>S/L:</b> <code>{download.seeders_num()}/{download.leechers_num()}</code>"                    
                 except:
                     pass
         elif download.status() == MirrorStatus.STATUS_SEEDING:
@@ -171,7 +170,7 @@ def get_readable_message():
         if config_dict['DELETE_LINKS']:
             msg += f"\n <b>Upload:</b> <code>{download.extra_details['mode']}</code>"
         else:
-            msg += f"\n <b>Upload:</b> <code><a href='{download.message.link}'>{download.extra_details['mode']}</a></code>"       
+            msg += f"\n <b>Upload:</b> <code><a href='{download.message.link}'>{download.extra_details['mode']}</a></code>"
         msg += f" | <b>By:</b> <code>{tag}</code>"
         msg += f"\n <b>Stop:</b> <code>/{BotCommands.CancelMirror}_{download.gid()}</code>"
         msg += f"\n<b>▬▬▬▬▬▬▬▬▬▬▬▬▬</b>"
@@ -200,7 +199,7 @@ def get_readable_message():
     msg += f" | <b>🅄🅻</b>: <code>{get_readable_file_size(up_speed)}/s</code>◭"
     if tasks <= STATUS_LIMIT:
         buttons = ButtonMaker()
-        buttons.ibutton("BOT INFO", "status stats")
+        buttons.ibutton("Bᴏᴛ Iɴғᴏ", "status stats")
         button = buttons.build_menu(1)
     if tasks > STATUS_LIMIT:
         return get_pages(msg)
@@ -399,9 +398,9 @@ async def checking_access(user_id, button=None):
         user_data[user_id].update(data)
         if button is None:
             button = ButtonMaker()
-        button.ubutton('Ambil Token Baru Dulu', short_url(f'https://telegram.me/{bot_name}?start={token}'))
-        tmsg = '<b>Token</b> kamu belum ada. Klik Start di bot untuk memulainya.\n\n <b>2:</b> Lalu mirror ulang kembali, okay.\n\n<b>PEA MASAMBA</b>'
-        tmsg += f'\n<b>Token Berlaku</b>: {get_readable_time(config_dict["TOKEN_TIMEOUT"])}'
+        button.ubutton('Get New Token', short_url(f'https://telegram.me/{bot_name}?start={token}'))
+        tmsg = 'Your <b>Token</b> is expired. Get a new one.'
+        tmsg += f'\n<b>Token Validity</b>: {get_readable_time(config_dict["TOKEN_TIMEOUT"])}'
         return tmsg, button
     return None, button
 
