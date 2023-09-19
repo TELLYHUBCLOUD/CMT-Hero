@@ -40,7 +40,7 @@ QbTorrents = {}
 list_drives_dict = {}
 shorteneres_list = []
 extra_buttons = {}
-GLOBAL_EXTENSION_FILTER = ['.aria2', '!qB']
+GLOBAL_EXTENSION_FILTER = ['aria2', '!qB', 'html', 'htm', 'json', 'txt', 'php', 'gif', 'lnk', 'torrent', 'url', 'xml', 'xhtml']
 user_data = {}
 aria2_options = {}
 qbit_options = {}
@@ -197,6 +197,10 @@ FILELION_API = environ.get('FILELION_API', '')
 if len(FILELION_API) == 0:
     FILELION_API = ''
 
+STREAMWISH_API = environ.get('STREAMWISH_API', '')
+if len(STREAMWISH_API) == 0:
+    STREAMWISH_API = ''
+
 INDEX_URL = environ.get('INDEX_URL', '').rstrip("/")
 if len(INDEX_URL) == 0:
     INDEX_URL = ''
@@ -309,7 +313,7 @@ if len(UPSTREAM_REPO) == 0:
 
 UPSTREAM_BRANCH = environ.get('UPSTREAM_BRANCH', '')
 if len(UPSTREAM_BRANCH) == 0:
-    UPSTREAM_BRANCH = 'zh_run'
+    UPSTREAM_BRANCH = 'cmt_run'
 
 RCLONE_SERVE_URL = environ.get('RCLONE_SERVE_URL', '')
 if len(RCLONE_SERVE_URL) == 0:
@@ -452,6 +456,7 @@ config_dict = {
     "STATUS_LIMIT": STATUS_LIMIT,
     "STATUS_UPDATE_INTERVAL": STATUS_UPDATE_INTERVAL,
     "STOP_DUPLICATE": STOP_DUPLICATE,
+    'STREAMWISH_API': STREAMWISH_API,
     "SUDO_USERS": SUDO_USERS,
     "TELEGRAM_API": TELEGRAM_API,
     "TELEGRAM_HASH": TELEGRAM_HASH,
