@@ -122,7 +122,7 @@ def get_progress_bar_string(pct):
 
 
 def get_readable_message():
-    msg = "<b><a href='https://subscene.com/u/1271292'>🄿🅴🄰 🅼🄰🅂🄰🅼🄱🄰</a> </b>\n\n"
+    msg = ""
     button = None
     STATUS_LIMIT = config_dict['STATUS_LIMIT']
     tasks = len(download_dict)
@@ -138,8 +138,8 @@ def get_readable_message():
         if config_dict['DELETE_LINKS']:
             msg += f"\n<b> <i>{escape(f'{download.name()}')}</i>\n\n" if elapsed <= config_dict['AUTO_DELETE_MESSAGE_DURATION'] else ""
         else:
-            msg += f"\n<b>File Name</b> » <i>{escape(f'{download.name()}')}</i>\n\n"
-        msg += f"⌑ <b>{download.status()}</b>"
+            msg += f"\n<b> <i>{escape(f'{download.name()}')}</i>\n\n"
+        msg += f"\n<b><code>{download.status()}</b></code>"
         if download.status() not in [MirrorStatus.STATUS_SEEDING, MirrorStatus.STATUS_PAUSED,
                                      MirrorStatus.STATUS_QUEUEDL, MirrorStatus.STATUS_QUEUEUP]:
             msg += f"\n\n {get_progress_bar_string(download.progress())} » {download.progress()}"
@@ -156,7 +156,7 @@ def get_readable_message():
                     pass
             if hasattr(download, 'seeders_num'):
                 try:
-                    msg += f"\n <b>S/L:</b> <code>{download.seeders_num()}/{download.leechers_num()}</code>"                    
+                    msg += f"\n <b>S/L:</b> <code>{download.seeders_num()}/{download.leechers_num()}</code>"
                 except:
                     pass
         elif download.status() == MirrorStatus.STATUS_SEEDING:
@@ -199,7 +199,7 @@ def get_readable_message():
     msg += f" | <b>🅄🅻</b>: <code>{get_readable_file_size(up_speed)}/s</code>◭"
     if tasks <= STATUS_LIMIT:
         buttons = ButtonMaker()
-        buttons.ibutton("Bᴏᴛ Iɴғᴏ", "status stats")
+        buttons.ibutton("BOT INFO", "status stats")
         button = buttons.build_menu(1)
     if tasks > STATUS_LIMIT:
         return get_pages(msg)
