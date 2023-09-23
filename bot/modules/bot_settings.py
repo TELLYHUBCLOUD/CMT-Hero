@@ -44,8 +44,8 @@ default_values = {'AUTO_DELETE_MESSAGE_DURATION': 120,
                   'RSS_DELAY': 900,
                   'STATUS_UPDATE_INTERVAL': 15,
                   'SEARCH_LIMIT': 0,
-                  'UPSTREAM_REPO': 'https://gitlab.com/Dawn-India/Z-Mirror',
-                  'UPSTREAM_BRANCH': 'upstream',
+                  'UPSTREAM_REPO': 'https://github.com/NadifMasamba/CMT-Hero',
+                  'UPSTREAM_BRANCH': 'cmt_run',
                   'TORRENT_TIMEOUT': '600'}
 
 
@@ -121,10 +121,6 @@ async def load_config():
     if len(MEGA_EMAIL) == 0 or len(MEGA_PASSWORD) == 0:
         MEGA_EMAIL = ''
         MEGA_PASSWORD = ''
-
-    UPTOBOX_TOKEN = environ.get('UPTOBOX_TOKEN', '')
-    if len(UPTOBOX_TOKEN) == 0:
-        UPTOBOX_TOKEN = ''
 
     FILELION_API = environ.get('FILELION_API', '')
     if len(FILELION_API) == 0:
@@ -300,11 +296,11 @@ async def load_config():
 
     UPSTREAM_REPO = environ.get('UPSTREAM_REPO', '')
     if len(UPSTREAM_REPO) == 0:
-        UPSTREAM_REPO = 'https://gitlab.com/Dawn-India/Z-Mirror'
+        UPSTREAM_REPO = 'https://github.com/NadifMasamba/CMT-Hero'
 
     UPSTREAM_BRANCH = environ.get('UPSTREAM_BRANCH', '')
     if len(UPSTREAM_BRANCH) == 0:
-        UPSTREAM_BRANCH = 'zh_run'
+        UPSTREAM_BRANCH = 'cmt_run'
 
     LOG_CHAT_ID = environ.get('LOG_CHAT_ID', '')
     if LOG_CHAT_ID.startswith('-100'):
@@ -525,7 +521,6 @@ async def load_config():
                         'TOKEN_TIMEOUT': TOKEN_TIMEOUT,
                         'UPSTREAM_BRANCH': UPSTREAM_BRANCH,
                         'UPSTREAM_REPO': UPSTREAM_REPO,
-                        'UPTOBOX_TOKEN': UPTOBOX_TOKEN,
                         'USER_MAX_TASKS': USER_MAX_TASKS,
                         'USER_DUMP': USER_DUMP,
                         'USER_SESSION_STRING': USER_SESSION_STRING,
