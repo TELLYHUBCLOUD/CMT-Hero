@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
+from datetime import datetime as dt
 from asyncio import create_subprocess_exec, gather
 from os import execl as osexecl
 from signal import SIGINT, signal
 from sys import executable
 from time import time, monotonic
 from uuid import uuid4
+from httpx import AsyncClient as xclient
 
 from aiofiles import open as aiopen
 from aiofiles.os import path as aiopath
@@ -41,7 +43,7 @@ async def stats(_, message, edit_mode=False):
     sysTime     = get_readable_time(time() - boot_time())
     botTime     = get_readable_time(time() - botStartTime)
     remaining_time = 86400 - (time() - botStartTime)
-    res_time = '🚸 KAPAN SAJA 🚸' if remaining_time <= 0 else get_readable_time(remaining_time)
+    res_time = '⚠️ Soon ⚠️' if remaining_time <= 0 else get_readable_time(remaining_time)
     total, used, free, disk = disk_usage('/')
     total       = get_readable_file_size(total)
     used        = get_readable_file_size(used)
@@ -55,7 +57,7 @@ async def stats(_, message, edit_mode=False):
     mem_p       = memory.percent
     swap        = swap_memory()
 
-    bot_stats = f'<b><i><u>Pea Masamba Bot Statis</u></i></b>\n\n'\
+    bot_stats = f'<b><i><u>Bot Statistics</u></i></b>\n\n'\
                 f'<code>CPU  : {get_progress_bar_string(cpuUsage)}</code> {cpuUsage}%\n' \
                 f'<code>RAM  : {get_progress_bar_string(mem_p)}</code> {mem_p}%\n' \
                 f'<code>SWAP : {get_progress_bar_string(swap.percent)}</code> {swap.percent}%\n' \
@@ -66,7 +68,7 @@ async def stats(_, message, edit_mode=False):
                 f'<code>Downloaded      : </code> {recv}\n' \
                 f'<code>Total Bandwidth : </code> {tb}'
 
-    sys_stats = f'<b><i><u>Pea Masamba System Statis</u></i></b>\n\n'\
+    sys_stats = f'<b><i><u>System Statistics</u></i></b>\n\n'\
                 f'<b>System Uptime:</b> <code>{sysTime}</code>\n' \
                 f'<b>CPU:</b> {get_progress_bar_string(cpuUsage)}<code> {cpuUsage}%</code>\n' \
                 f'<b>CPU Total Core(s):</b> <code>{cpu_count(logical=True)}</code>\n' \
@@ -118,19 +120,57 @@ async def send_sys_stats(_, query):
 
 async def send_repo_stats(_, query):
     buttons = ButtonMaker()
-    if await aiopath.exists('.git'):
-        last_commit = (await cmd_exec("git log -1 --date=short --pretty=format:'%cr'", True))[0]
-        version     = (await cmd_exec("git describe --abbrev=0 --tags", True))[0]
-        change_log  = (await cmd_exec("git log -1 --pretty=format:'%s'", True))[0]
-    else:
-        last_commit = 'No UPSTREAM_REPO'
-        version     = 'N/A'
-        change_log  = 'N/A'
-
-    repo_stats = f'<b><i><u>Repo CMT Information</u></i></b>\n\n' \
-                  f'<code>Updated   : </code> {last_commit}\n' \
-                  f'<code>Version   : </code> {version}\n' \
-                  f'<code>Changelog : </code> {change_log}'
+    commit_date = 'Official Repo not available'
+    last_commit = 'No UPSTREAM_REPO'
+    c_log       = 'N/A'
+    d_log       = 'N/A'
+    vtag        = 'N/A'
+    version     = 'N/A'
+    change_log  = 'N/A'
+    update_info = ''
+    s_id        = ''
+    async with xclient() as client:
+        c_url = 'https://gitlab.com/api/v4/projects/Dawn-India%2fZ-Mirror/repository/branches'
+        v_url = 'https://gitlab.com/api/v4/projects/Dawn-India%2FZ-Mirror/repository/tags'
+        res = await client.get(c_url)
+        pns = await client.get(v_url)
+        if res.status_code == 200 and pns.status_code == 200:
+            commits = res.json()
+            tags = pns.json()
+            if commits:
+                commits = next((commit for commit in commits if commit["name"] == "upstream"), None)
+                commit_date   = commits["commit"]["committed_date"]
+                commit_date   = dt.strptime(commit_date, '%Y-%m-%dT%H:%M:%S.%f%z')
+                commit_date   = commit_date.strftime('%d/%m/%Y at %I:%M %p')
+                logs          = commits["commit"]["message"].split('\n\n')
+                c_log         = logs[0]
+                d_log         = logs[1]
+                s_id          = commits["commit"]["short_id"]
+            if tags:
+                tags = next((tag for tag in tags if tag["commit"]["short_id"] == f"{s_id}"), None)
+                vtag = tags["name"]
+        if await aiopath.exists('.git'):
+            last_commit = (await cmd_exec("git log -1   --date=short --pretty=format:'%cr'", True))[0]
+            version     = (await cmd_exec("git describe --abbrev=0   --tags",                True))[0]
+            change_log  = (await cmd_exec("git log -1   --pretty=format:'%s'",               True))[0]
+            if version == '':
+                version = 'N/A'
+        if version != 'N/A':
+            if version != vtag:
+                update_info =  f'⚠️ New Version Update Available ⚠️\n'
+                update_info += f'Update ASAP and experience new features and bug-fixes.'
+        
+    repo_stats = f'<b><i><u>Repository Info</u></i></b> \n\n' \
+                 f'<b><i>Official Repository</i></b>        \n'   \
+                 f'<code>- Updated   : </code> {commit_date}\n'   \
+                 f'<code>- Version   : </code> {vtag}       \n'   \
+                 f'<code>- Changelog : </code> {c_log}      \n'   \
+                 f'<code>- Desc      : </code> {d_log}      \n'   \
+                 f'<b><i>Bot Repository</i></b>             \n'   \
+                 f'<code>- Updated   : </code> {last_commit}\n'   \
+                 f'<code>- Version   : </code> {version}    \n'   \
+                 f'<code>- Changelog : </code> {change_log} \n\n' \
+                 f'<b>{update_info}</b>'
 
     buttons.ibutton("Bot Stats",  "show_bot_stats")
     buttons.ibutton("Sys Stats",  "show_sys_stats")
@@ -153,7 +193,7 @@ async def send_bot_limits(_, query):
     UMT = 'Unlimited' if config_dict['USER_MAX_TASKS']  == '' else config_dict['USER_MAX_TASKS']
     BMT = 'Unlimited' if config_dict['QUEUE_ALL']       == '' else config_dict['QUEUE_ALL']
 
-    bot_limit = f'<b><i><u>Pea Masamba Bot Limit</u></i></b>\n' \
+    bot_limit = f'<b><i><u>Bot Limitations</u></i></b>\n' \
                 f'<code>Torrent   : {TOR}</code> <b>GB</b>\n' \
                 f'<code>G-Drive   : {GDL}</code> <b>GB</b>\n' \
                 f'<code>Yt-Dlp    : {YTD}</code> <b>GB</b>\n' \
@@ -208,13 +248,13 @@ async def start(_, message):
         msg += f'Validity: {get_readable_time(int(config_dict["TOKEN_TIMEOUT"]))}'
         return await sendMessage(message, msg)
     elif config_dict['DM_MODE'] and message.chat.type != message.chat.type.SUPERGROUP:
-        start_string = 'Bot Mulai.\n' \
-                       'Sekarang saya bisa mengirim file Anda ke sini.\n' \
-                       'Gunakan Bot ini disini: @peamasamba'
+        start_string = 'Bot Started.\n' \
+                       'Now I will send all of your stuffs here.\n' \
+                       'Use me at: @peamasamba'
     elif not config_dict['DM_MODE'] and message.chat.type != message.chat.type.SUPERGROUP:
-        start_string = 'Maaf, Anda tak bisa pakai bot ini di sini!\n' \
-                       'Gabung @peamasamba jika mau pakai bot ini.\n' \
-                       'Terima Kasih'
+        start_string = 'Sorry, you cannot use me here!\n' \
+                       'Join: @peamasamba to use me.\n' \
+                       'Thank You'
     else:
         tag = message.from_user.mention
         start_string = 'Start me in DM, not in the group.\n' \
@@ -381,7 +421,7 @@ async def main():
     bot.add_handler(CallbackQueryHandler(send_sys_stats,    filters=regex("^show_sys_stats")))
     bot.add_handler(CallbackQueryHandler(send_repo_stats,   filters=regex("^show_repo_stats")))
     bot.add_handler(CallbackQueryHandler(send_bot_limits,   filters=regex("^show_bot_limits")))
-    LOGGER.info("Congratulations, Bot Started Successfully!")
+    LOGGER.info("Bot Started Successfully!")
     signal(SIGINT, exit_clean_up)
 
 bot.loop.run_until_complete(main())
