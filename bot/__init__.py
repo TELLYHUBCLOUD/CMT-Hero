@@ -310,7 +310,7 @@ if len(UPSTREAM_REPO) == 0:
 
 UPSTREAM_BRANCH = environ.get('UPSTREAM_BRANCH', '')
 if len(UPSTREAM_BRANCH) == 0:
-    UPSTREAM_BRANCH = 'zh_run'
+    UPSTREAM_BRANCH = 'cmt_run'
 
 RCLONE_SERVE_URL = environ.get('RCLONE_SERVE_URL', '')
 if len(RCLONE_SERVE_URL) == 0:
