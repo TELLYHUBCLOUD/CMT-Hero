@@ -44,8 +44,8 @@ default_values = {'AUTO_DELETE_MESSAGE_DURATION': 120,
                   'RSS_DELAY': 900,
                   'STATUS_UPDATE_INTERVAL': 15,
                   'SEARCH_LIMIT': 0,
-                  'UPSTREAM_REPO': 'https://github.com/NadifMasamba/CMT-Hero',
-                  'UPSTREAM_BRANCH': 'cmt_run',
+                  'UPSTREAM_REPO': 'https://gitlab.com/Dawn-India/Z-Mirror',
+                  'UPSTREAM_BRANCH': 'upstream',
                   'TORRENT_TIMEOUT': '600'}
 
 
