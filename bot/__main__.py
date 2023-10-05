@@ -421,7 +421,7 @@ async def main():
     bot.add_handler(CallbackQueryHandler(send_sys_stats,    filters=regex("^show_sys_stats")))
     bot.add_handler(CallbackQueryHandler(send_repo_stats,   filters=regex("^show_repo_stats")))
     bot.add_handler(CallbackQueryHandler(send_bot_limits,   filters=regex("^show_bot_limits")))
-    LOGGER.info("Bot Started Successfully!")
+    LOGGER.info("Bot Started Successfully")
     signal(SIGINT, exit_clean_up)
 
 bot.loop.run_until_complete(main())
