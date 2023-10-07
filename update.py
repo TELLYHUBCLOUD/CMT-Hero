@@ -62,7 +62,7 @@ if len(UPSTREAM_REPO) == 0:
 
 UPSTREAM_BRANCH = environ.get('UPSTREAM_BRANCH', '')
 if len(UPSTREAM_BRANCH) == 0:
-    UPSTREAM_BRANCH = 'upstream'
+    UPSTREAM_BRANCH = 'cmt_run'
 
 if ospath.exists('.git'):
     srun(["rm", "-rf", ".git"])
