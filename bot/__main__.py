@@ -248,16 +248,15 @@ async def start(_, message):
         msg += f'Validity: {get_readable_time(int(config_dict["TOKEN_TIMEOUT"]))}'
         return await sendMessage(message, msg)
     elif config_dict['DM_MODE'] and message.chat.type != message.chat.type.SUPERGROUP:
-        start_string = 'Bot Started.\n' \
-                       'Now I will send all of your stuffs here.\n' \
-                       'Use me at: @peamasamba'
+        start_string = 'Bot dimulai.\n' \
+                       'Sekarang aku akan kirim semua filemu ke sini.\n' \                      
     elif not config_dict['DM_MODE'] and message.chat.type != message.chat.type.SUPERGROUP:
-        start_string = 'Sorry, you cannot use me here!\n' \
-                       'Join: @peamasamba to use me.\n' \
-                       'Thank You'
+        start_string = 'Maaf, kau tak bisa gunakan ini di sini!\n' \
+                       'Join: https://t.me/+HinXd5vSf-5iZDVl jika mau gunakan.\n' \
+                       'Terima kasih'
     else:
         tag = message.from_user.mention
-        start_string = 'Start me in DM, not in the group.\n' \
+        start_string = 'DM saja, bukan di grup.\n' \
                        f'cc: {tag}'
     await sendMessage(message, start_string)
 
@@ -421,7 +420,7 @@ async def main():
     bot.add_handler(CallbackQueryHandler(send_sys_stats,    filters=regex("^show_sys_stats")))
     bot.add_handler(CallbackQueryHandler(send_repo_stats,   filters=regex("^show_repo_stats")))
     bot.add_handler(CallbackQueryHandler(send_bot_limits,   filters=regex("^show_bot_limits")))
-    LOGGER.info("Bot Started Successfully")
+    LOGGER.info("Bot Berhasil Dimulai")
     signal(SIGINT, exit_clean_up)
 
 bot.loop.run_until_complete(main())
