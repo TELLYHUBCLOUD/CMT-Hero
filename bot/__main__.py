@@ -249,7 +249,7 @@ async def start(_, message):
         return await sendMessage(message, msg)
     elif config_dict['DM_MODE'] and message.chat.type != message.chat.type.SUPERGROUP:
         start_string = 'Bot dimulai.\n' \
-                       'Sekarang aku akan kirim semua filemu ke sini.\n' \                      
+                       'Sekarang aku akan kirim semua filemu ke sini'                     
     elif not config_dict['DM_MODE'] and message.chat.type != message.chat.type.SUPERGROUP:
         start_string = 'Maaf, kau tak bisa gunakan ini di sini!\n' \
                        'Join: https://t.me/+HinXd5vSf-5iZDVl jika mau gunakan.\n' \
