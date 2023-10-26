@@ -145,8 +145,8 @@ def get_readable_message():
             msg += f"\n\n {get_progress_bar_string(download.progress())} » {download.progress()}"
             msg += f"\n <b>Speed:</b> <code>{download.speed()}</code>"            
             msg += f"\n <b>Done:</b> <code>{download.processed_bytes()}</code> of <code>{download.size()}</code>"
-            msg += f"\n <b>ETA:</b> <code>{download.eta()}</code> | "
-            msg += f"<b>Elp:</b> <code>{get_readable_time(elapsed)}</code>"
+            msg += f"\n <b>ETA:</b> <code>{download.eta()}</code>"
+            msg += f"\n <b>Elp:</b> <code>{get_readable_time(elapsed)}</code>"
             msg += f"\n <b>Engine:</b> <code>{download.engine}</code>"
             if hasattr(download, 'playList'):
                 try:
@@ -171,7 +171,7 @@ def get_readable_message():
             msg += f"\n <b>Upload:</b> <code>{download.extra_details['mode']}</code>"
         else:
             msg += f"\n <b>Upload:</b> <code><a href='{download.message.link}'>{download.extra_details['mode']}</a></code>"
-        msg += f" | <b>By:</b> <code>{tag}</code>"
+        msg += f"\n <b>By:</b> <code>{tag}</code>"
         msg += f"\n <b>Stop:</b> <code>/{BotCommands.CancelMirror}_{download.gid()}</code>"
         msg += f"\n<b>▬▬▬▬▬▬▬▬▬▬▬▬▬</b>"
         msg += "\n\n"
