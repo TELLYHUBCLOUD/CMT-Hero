@@ -13,14 +13,14 @@ from web.nodes import make_tree
 app = Flask(__name__)
 
 basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    handlers=[FileHandler('log.txt'), StreamHandler()],
+                    handlers=[FileHandler('Z_logs.txt'), StreamHandler()],
                     level=INFO)
 
 aria2 = ariaAPI(ariaClient(host="http://localhost", port=6800, secret=""))
 
 LOGGER = getLogger(__name__)
 
-rawowners = "<h1 style='text-align: center'>See my Channel <a href='https://telegram.me/z_mirror'>@Telegram</a><br><br>By<br><br><a href='https://github.com/Dawn-India/Z-Mirror'>Z-Mirror</a></h1>"
+rawowners = "<h1 style='text-align: center'>See my Channel <a href='https://t.me/+4_Tbq43N4vkxZjI1'>@Telegram</a><br><br>By<br><br><a href='https://github.com/NadifMasamba/CMT-Hero'>Pea Masamba</a></h1>"
 
 pin_entry = '''
     <section>
@@ -35,9 +35,7 @@ pin_entry = '''
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
-          <span
-            >* Dont mess around. Your download will get messed up.</
-          >
+          <span>* Dont mess around. Your download will get messed up.</>
     </section>
 '''
 files_list = '''
@@ -87,8 +85,8 @@ rawindexpage = '''
         </div>
         <h2 class="name">Qbittorrent Selection</h2>
         <div class="social">
-            <a href="https://www.github.com/Dawn-India/Z-Mirror"><i class="fab fa-github"></i></a>
-            <a href="https://telegram.me/Z_Mirror"><i class="fab fa-telegram"></i></a>
+            <a href="https://github.com/NadifMasamba/CMT-Hero"><i class="fab fa-github"></i></a>
+            <a href="https://t.me/+4_Tbq43N4vkxZjI1"><i class="fab fa-telegram"></i></a>
         </div>
     </header>
     <!-- pin_entry -->
@@ -839,11 +837,11 @@ def status():
     }
 @app.route('/')
 def homepage():
-    return rawindexpage.replace("/* style1 */", stlye1).replace("<!-- Print -->", rawowners)
+    return rawindexpage.replace("/* style2 */", stlye2).replace("<!-- Print -->", rawowners)
 
 @app.errorhandler(Exception)
 def page_not_found(e):
-    return rawindexpage.replace("/* style1 */", stlye1) \
+    return rawindexpage.replace("/* style2 */", stlye2) \
                     .replace("<!-- Print -->", f"<h1 style='text-align: center;color: red;'>404: Torrent not found! Mostly wrong input. <br><br>Error: {e}</h1>"), 404
 
 if __name__ == "__main__":
