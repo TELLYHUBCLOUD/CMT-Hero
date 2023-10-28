@@ -53,6 +53,11 @@ async def stats(_, message, edit_mode=False):
     tb          = get_readable_file_size(net_io_counters().bytes_sent + net_io_counters().bytes_recv)
     cpuUsage    = cpu_percent(interval=0.1)
     v_core      = cpu_count(logical=True) - cpu_count(logical=False)
+    freq_info   = cpu_freq(percpu=False)
+    if freq_info is not None:
+        frequency = freq_info.current / 1000
+    else:
+        frequency = '-_-'
     memory      = virtual_memory()
     mem_p       = memory.percent
     swap        = swap_memory()
@@ -74,7 +79,7 @@ async def stats(_, message, edit_mode=False):
                 f'<b>CPU Total Core(s):</b> <code>{cpu_count(logical=True)}</code>\n' \
                 f'<b>P-Core(s):</b> <code>{cpu_count(logical=False)}</code> | ' \
                 f'<b>V-Core(s):</b> <code>{v_core}</code>\n' \
-                f'<b>Frequency:</b> <code>{cpu_freq(percpu=False).current / 1000:.2f} GHz</code>\n\n' \
+                f'<b>Frequency:</b> <code>{frequency} GHz</code>\n\n' \
                 f'<b>RAM:</b> {get_progress_bar_string(mem_p)}<code> {mem_p}%</code>\n' \
                 f'<b>Total:</b> <code>{get_readable_file_size(memory.total)}</code> | ' \
                 f'<b>Free:</b> <code>{get_readable_file_size(memory.available)}</code>\n\n' \
@@ -249,7 +254,7 @@ async def start(_, message):
         return await sendMessage(message, msg)
     elif config_dict['DM_MODE'] and message.chat.type != message.chat.type.SUPERGROUP:
         start_string = 'Bot dimulai.\n' \
-                       'Sekarang aku akan kirim semua filemu ke sini'                     
+                       'Sekarang aku akan kirim semua filemu ke sini'
     elif not config_dict['DM_MODE'] and message.chat.type != message.chat.type.SUPERGROUP:
         start_string = 'Maaf, kau tak bisa gunakan ini di sini!\n' \
                        'Join: https://t.me/+HinXd5vSf-5iZDVl jika mau gunakan.\n' \
@@ -315,7 +320,8 @@ help_string = f'''
 
 <b>Cancel Tasks:</b>
 /{BotCommands.CancelMirror}: Cancel task by gid or reply.
-/{BotCommands.CancelAllCommand[0]} : Cancel all tasks which added by you /{BotCommands.CancelAllCommand[1]} to in bots.
+/{BotCommands.CancelAllCommand[0]} : Cancel all tasks which added by you.
+/{BotCommands.CancelAllCommand[1]} : Cancel your all tasks in all bots.
 
 <b>Torrent/Drive Search:</b>
 /{BotCommands.ListCommand} [query]: Search in Google Drive(s).
@@ -337,6 +343,10 @@ help_string = f'''
 /{BotCommands.StatsCommand[0]} or /{BotCommands.StatsCommand[1]}: Show server stats.
 /{BotCommands.PingCommand[0]} or /{BotCommands.PingCommand[1]}: Check how long it takes to Ping the Bot.
 
+<b>Database Management:</b>
+/{BotCommands.RmdbCommand}: To remove active tasks from database (Only Owner & Sudo).
+/{BotCommands.RmalltokensCommand}: To remove all access tokens from database (Only Owner & Sudo).
+
 <b>Maintainance:</b>
 /{BotCommands.RestartCommand[0]}: Restart and update the bot (Only Owner & Sudo).
 /{BotCommands.RestartCommand[1]}: Restart and update all bots (Only Owner & Sudo).
@@ -356,8 +366,8 @@ help_string = f'''
 
 @new_thread
 async def bot_help(_, message):
-    reply_message = await sendMessage(message, help_string)
-    await auto_delete_message(message, reply_message)
+    hmsg = await sendMessage(message, help_string)
+    await auto_delete_message(message, hmsg)
 
 
 async def restart_notification():
@@ -420,7 +430,7 @@ async def main():
     bot.add_handler(CallbackQueryHandler(send_sys_stats,    filters=regex("^show_sys_stats")))
     bot.add_handler(CallbackQueryHandler(send_repo_stats,   filters=regex("^show_repo_stats")))
     bot.add_handler(CallbackQueryHandler(send_bot_limits,   filters=regex("^show_bot_limits")))
-    LOGGER.info("Bot Berhasil Dimulai")
+    LOGGER.info("Congratulations, Bot Started Successfully!")
     signal(SIGINT, exit_clean_up)
 
 bot.loop.run_until_complete(main())
