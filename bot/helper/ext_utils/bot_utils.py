@@ -135,7 +135,7 @@ def get_readable_message():
             tag = reply_to.from_user.mention
         elapsed = time() - download.extra_details['startTime']
         if config_dict['DELETE_LINKS'] and int(config_dict['AUTO_DELETE_MESSAGE_DURATION']) > 0:
-            msg += f"\n<b> <i>{escape(f'{download.name()}')}</i>\n\n" if elapsed <= config_dict['AUTO_DELETE_MESSAGE_DURATION'] else ""
+            msg += f"\n<b> <i>{escape(f'{download.name()}')}</i>\n\n" if elapsed <= config_dict['AUTO_DELETE_MESSAGE_DURATION']
         else:
             msg += f"\n<b> <i>{escape(f'{download.name()}')}</i>\n\n"
         msg += f"\n<b><code>{download.status()}</b></code>"
@@ -150,7 +150,7 @@ def get_readable_message():
             if hasattr(download, 'playList'):
                 try:
                     if playlist:=download.playList():
-                        msg += f"\n <code>YT Count: </code> {playlist}"
+                        msg += f"\n <code>YT List: </code> {playlist}"
                 except:
                     pass
             if hasattr(download, 'seeders_num'):
@@ -167,9 +167,9 @@ def get_readable_message():
         else:
             msg += f"\n <b>Size:</b>  {download.size()}"
         if config_dict['DELETE_LINKS']:
-            msg += f"\n <b>Upload:</b> <code>{download.extra_details['mode']}</code>"
+            msg += f"\n <b>Task:</b> <code>{download.extra_details['mode']}</code>"
         else:
-            msg += f"\n <b>Upload:</b> <code><a href='{download.message.link}'>{download.extra_details['mode']}</a></code>"
+            msg += f"\n <b>Task:</b> <code><a href='{download.message.link}'>{download.extra_details['mode']}</a></code>"
         msg += f"\n <b>By:</b> <code>{tag}</code>"
         msg += f"\n <b>Stop:</b> <code>/{BotCommands.CancelMirror}_{download.gid()}</code>"
         msg += f"\n<b>▬▬▬▬▬▬▬▬▬▬▬▬▬</b>"
