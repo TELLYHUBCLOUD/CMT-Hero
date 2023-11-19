@@ -92,7 +92,7 @@ def direct_link_generator(link):
         return fembed(link)
     elif any(x in domain for x in ['sbembed.com', 'watchsb.com', 'streamsb.net', 'sbplay.org']):
         return sbembed(link)
-    elif any(x in domain for x in ['filelions.com', 'filelions.live', 'filelions.to', 'filelions.online','embedwish.com',
+    elif any(x in domain for x in ['filelions.co', 'filelions.site', 'filelions.live', 'filelions.to', 'cabecabean.lol', 'filelions.online','embedwish.com',
                                    'streamwish.com', 'streamwish.to', 'kitabmarkaz.xyz', 'wishfast.top']):
         return filelions_and_streamwish(link)
     elif any(x in domain for x in ['streamhub.ink', 'streamhub.to']):
@@ -1144,9 +1144,9 @@ def filelions_and_streamwish(url):
     parsed_url = urlparse(url)
     hostname = parsed_url.hostname
     scheme = parsed_url.scheme
-    if any(x in hostname for x in ['filelions.com', 'filelions.live', 'filelions.to', 'filelions.online']):
+    if any(x in hostname for x in ['filelions.co', 'filelions.site', 'filelions.live', 'filelions.to', 'cabecabean.lol', 'filelions.online']):
         apiKey = config_dict['FILELION_API']
-        apiUrl = 'https://api.filelions.com'
+        apiUrl = 'https://api.filelions.co'
     elif any(x in hostname for x in ['embedwish.com', 'streamwish.com', 'streamwish.to', 'kitabmarkaz.xyz', 'wishfast.top']):
         apiKey = config_dict['STREAMWISH_API']
         apiUrl = 'https://api.streamwish.com'
