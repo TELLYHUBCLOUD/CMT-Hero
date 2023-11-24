@@ -112,7 +112,7 @@ async def rcloneNode(client, message, link, dst_path, rcf, listener):
     RCTransfer = RcloneTransferHelper(listener, name)
     LOGGER.info(
         f'Clone Started: Name: {name} - Source: {link} - Destination: {dst_path}')
-    gid = token_urlsafe(12)
+    gid = token_urlsafe(6)
     async with download_dict_lock:
         download_dict[message.id] = RcloneStatus(RCTransfer, message, gid, 'cl', listener.extra_details)
     await sendStatusMessage(message)
@@ -200,7 +200,7 @@ async def gdcloneNode(message, link, listener):
             link, size, mime_type, files, folders = await sync_to_async(drive.clone, link, listener.drive_id)
             await deleteMessage(msg)
         else:
-            gid = token_urlsafe(12)
+            gid = token_urlsafe(6)
             async with download_dict_lock:
                 download_dict[message.id] = GdriveStatus(drive, size, message, gid, 'cl', listener.extra_details)
             await sendStatusMessage(message)
@@ -299,10 +299,10 @@ async def clone(client, message):
     else:
         dmMessage = None
     if error_msg:
-        final_msg = f'Hey, <b>{tag}</b>,\n'
+        final_msg = f'Hei, <b>{tag}</b>,\n'
         for __i, __msg in enumerate(error_msg, 1):
             final_msg += f'\n<b>{__i}</b>: {__msg}\n'
-        final_msg += f'\n<b>Thank You</b>'
+        final_msg += f'\n<b>Terima Kasih</b>'
         if error_button is not None:
             error_button = error_button.build_menu(2)
         await delete_links(message)
