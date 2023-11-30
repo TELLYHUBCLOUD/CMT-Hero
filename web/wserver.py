@@ -12,15 +12,14 @@ from web.nodes import make_tree
 
 app = Flask(__name__)
 
-basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    handlers=[FileHandler('Z_logs.txt'), StreamHandler()],
-                    level=INFO)
+basicConfig(format='%(levelname)s | From %(name)s -> %(module)s line no: %(lineno)d | %(message)s',
+                    handlers=[FileHandler('Z_Logs.txt'), StreamHandler()], level=INFO)
 
 aria2 = ariaAPI(ariaClient(host="http://localhost", port=6800, secret=""))
 
 LOGGER = getLogger(__name__)
 
-rawowners = "<h1 style='text-align: center'>See my Channel <a href='https://t.me/+4_Tbq43N4vkxZjI1'>@Telegram</a><br><br>By<br><br><a href='https://github.com/NadifMasamba/CMT-Hero'>Pea Masamba</a></h1>"
+rawowners = "<h1 style='text-align: center'>See my Channel <a href='https://telegram.me/peamasamba'>@Telegram</a><br><br>By<br><br><a href='https://github.com/NadifMasamba/CMT-Hero'>Pea Masamba-Mirror</a></h1>"
 
 pin_entry = '''
     <section>
@@ -86,7 +85,7 @@ rawindexpage = '''
         <h2 class="name">Qbittorrent Selection</h2>
         <div class="social">
             <a href="https://github.com/NadifMasamba/CMT-Hero"><i class="fab fa-github"></i></a>
-            <a href="https://t.me/+4_Tbq43N4vkxZjI1"><i class="fab fa-telegram"></i></a>
+            <a href="https://telegram.me/peamasamba"><i class="fab fa-telegram"></i></a>
         </div>
     </header>
     <!-- pin_entry -->
