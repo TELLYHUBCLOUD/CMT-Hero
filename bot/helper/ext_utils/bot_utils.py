@@ -198,7 +198,7 @@ def get_readable_message():
     msg += f" | <b>🅄🅻</b>: <code>{get_readable_file_size(up_speed)}/s</code>◭"
     if tasks <= STATUS_LIMIT:
         buttons = ButtonMaker()
-        buttons.ibutton("BOT INFO", "status stats")
+        buttons.ibutton("Sᴛᴀᴛɪsᴛɪᴄs Bᴏᴛ", "status stats")
         button = buttons.build_menu(1)
     if tasks > STATUS_LIMIT:
         return get_pages(msg)
