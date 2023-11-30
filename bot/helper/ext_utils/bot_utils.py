@@ -101,7 +101,7 @@ def bt_selection_buttons(id_, isCanCncl=True):
 
 async def get_telegraph_list(telegraph_content):
     path = [(await telegraph.create_page(
-        title='Pea Masamba Drive Search', content=content))["path"] for content in telegraph_content]
+        title='Z Drive Search', content=content))["path"] for content in telegraph_content]
     if len(path) > 1:
         await telegraph.edit_telegraph(path, telegraph_content)
     buttons = ButtonMaker()
@@ -198,7 +198,7 @@ def get_readable_message():
     msg += f" | <b>🅄🅻</b>: <code>{get_readable_file_size(up_speed)}/s</code>◭"
     if tasks <= STATUS_LIMIT:
         buttons = ButtonMaker()
-        buttons.ibutton("Sᴛᴀᴛɪsᴛɪᴋ Mɪʀʀᴏʀ", "status stats")
+        buttons.ibutton("BOT INFO", "status stats")
         button = buttons.build_menu(1)
     if tasks > STATUS_LIMIT:
         return get_pages(msg)
