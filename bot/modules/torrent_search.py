@@ -14,7 +14,7 @@ from bot.helper.ext_utils.telegraph_helper import telegraph
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.button_build import ButtonMaker
 from bot.helper.telegram_helper.filters import CustomFilters
-from bot.helper.telegram_helper.message_utils import (anno_checker, deleteMessage,
+from bot.helper.telegram_helper.message_utils import (anno_checker,
                                                       editMessage, isAdmin,
                                                       auto_delete_message,
                                                       request_limiter,
@@ -124,7 +124,7 @@ async def __search(key, site, message, method):
         await sync_to_async(client.auth_log_out)
     link = await __getResult(search_results, key, message, method)
     buttons = ButtonMaker()
-    buttons.ubutton("🔦 VIEW", link)
+    buttons.ubutton("🔎 VIEW", link)
     button = buttons.build_menu(1)
     smsg = await editMessage(message, msg, button)
     await delete_links(message.reply_to_message)
@@ -192,7 +192,7 @@ async def __getResult(search_results, key, message, method):
         telegraph_content.append(msg)
 
     await editMessage(message, f"<b>Creating</b> {len(telegraph_content)} <b>Telegraph pages.</b>")
-    path = [(await telegraph.create_page(title='Pea Masamba Torrent Search',
+    path = [(await telegraph.create_page(title='Z Torrent Search',
                                          content=content))["path"] for content in telegraph_content]
     if len(path) > 1:
         await editMessage(message, f"<b>Editing</b> {len(telegraph_content)} <b>Telegraph pages.</b>")
