@@ -71,13 +71,12 @@ async def get_document_type(path):
                                  "json", "-show_streams", path])
         if res := result[1]:
             LOGGER.warning(f"Get Document Type: {res} - File: {path}")
-            return is_video, is_audio, is_image
     except Exception as e:
         LOGGER.error(f"Get Document Type: {e}. Mostly File not found! - File: {path}")
         return is_video, is_audio, is_image
     fields = eval(result[0]).get('streams')
     if fields is None:
-        LOGGER.error(f"get_document_type: {result}")
+        LOGGER.error(f"Get_document_type: {result}")
         return is_video, is_audio, is_image
     for stream in fields:
         if stream.get('codec_type') == 'video':
