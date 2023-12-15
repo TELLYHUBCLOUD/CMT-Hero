@@ -322,7 +322,7 @@ UPSTREAM_BRANCH = environ.get('UPSTREAM_BRANCH', '')
 if len(UPSTREAM_BRANCH) == 0:
     UPSTREAM_BRANCH = 'cmt_run'
 
-RCLONE_SERVE_URL = environ.get('RCLONE_SERVE_URL', '')
+RCLONE_SERVE_URL = environ.get('RCLONE_SERVE_URL', '').rstrip("/")
 if len(RCLONE_SERVE_URL) == 0:
     RCLONE_SERVE_URL = ''
 
@@ -574,7 +574,7 @@ zrun(["buffet", "--conf-path=/usr/src/app/a2c.conf"])
 
 if ospath.exists('accounts.zip'):
     if ospath.exists('accounts'):
-        zrun("rm -rf accounts")
+        zrun(["rm", "-rf", "accounts"])
     zrun(["7z", "x", "-o.", "-bso0", "-aoa", "accounts.zip", "accounts/*.json", "&&", "chmod", "-R", "777", "accounts"])
     remove('accounts.zip')
 if not ospath.exists('accounts'):
